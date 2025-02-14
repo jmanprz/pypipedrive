@@ -107,7 +107,8 @@ class Model:
     @classmethod
     def _attribute_descriptor_map(cls) -> Dict[str, Any]:
         """
-        Build a mapping of the model's attribute names to field descriptor instances.
+        Build a mapping of the model's attribute names to field descriptor
+        instances, including inherited attributes.
 
         >>> class Test(Model):
         ...     first_name = TextField("First Name")
@@ -119,7 +120,11 @@ class Model:
         ...     "another_Field": <NumberField field_name="Age">,
         ... }
         """
-        return {k:v for k,v in cls.__dict__.items() if isinstance(v, Field)}
+        attributes = {}
+        for base in cls.__mro__:
+            if issubclass(base, Model):
+                attributes.update({k: v for k, v in base.__dict__.items() if isinstance(v, Field)})
+        return attributes
 
     @classmethod
     def _field_name_descriptor_map(cls) -> Dict[str, Any]:

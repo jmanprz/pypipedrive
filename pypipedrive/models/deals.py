@@ -37,10 +37,6 @@ class Deals(Model):
     is_archived         = F.BooleanField("is_archived")
     archive_time        = F.DatetimeField("archive_time")
 
-    # Custom field names
-    custom_chantier_nom = F.TextField("698d3d29f0106152004c67af77557c4ac93a9a97")
-    custom_chantier_zip = F.TextField("5f202d7ec6b956bc717ecee95d6323a47d8cfa4a")
-
     class Meta:
         id_name       = "id"
         entity_name   = "deals"
