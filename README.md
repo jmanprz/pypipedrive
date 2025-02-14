@@ -12,6 +12,11 @@ See [dev.to](https://dev.to/abdellahhallou/create-and-release-a-private-python-p
 pip install git+https://{{ your access token }}@github.com/gildastone/pypipedrive.git@{{ tag/version }}#egg=pypipedrive
 ```
 
+### Limitations
+
+- Unable to upate the `custom_fields`.
+- Only for Pipedrive V2 API
+
 ### Building the package
 
 ```sh
