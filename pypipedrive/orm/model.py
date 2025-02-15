@@ -303,6 +303,18 @@ class Model:
                 f"Status code: {response.status_code}. Reason {response.reason}."
             )
 
+    def fetch(self) -> None:
+        """
+        Fetch field values from the API and resets instance field values.
+        """
+        if not self.id:
+            raise ValueError("cannot be fetched because instance does not have an id")
+
+        instance = self.get(id=self.id)
+        self._fields = instance._fields
+        self._changed.clear()
+        self._fetched = True
+
     def save(self, *, force: bool = False) -> "SaveResult":
         """
         Save the model to the Pipedrive API.
