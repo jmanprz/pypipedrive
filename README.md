@@ -1,10 +1,10 @@
 # pyPipedrive
 
-![CI](https://github.com/gildastone/pypipedrive/actions/workflows/test_lint_deploy.yml/badge.svg)
+![CI](https://github.com/gildastone/pypipedrive/actions/workflows/ci_pipeline.yml/badge.svg)
 [![PyPI](https://img.shields.io/pypi/v/pypipedrive-client.svg)](https://pypi.org/project/pypipedrive-client/)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/pypipedrive-client.svg?label=downloads)](https://pypi.org/project/pypipedrive-client/)
 [![Documentation Status](https://readthedocs.org/projects/pypipedrive/badge/?version=latest)](http://pypipedrive.readthedocs.io/en/latest/?badge=latest)
-[![codecov](https://codecov.io/gh/gildastone/pypipedrive/branch/main/graph/badge.svg?token=askmZgmMoV)](https://codecov.io/gh/gildastone/pypipedrive)
+[![codecov](https://codecov.io/gh/gildastone/pypipedrive/graph/badge.svg?token=8M4SGDOYGL)](https://codecov.io/gh/gildastone/pypipedrive)
 
 ## Pipedrive API SDK
 
