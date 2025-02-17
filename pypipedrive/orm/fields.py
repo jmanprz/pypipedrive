@@ -14,7 +14,6 @@ from typing import (
     List,
     Optional,
     overload,
-    Self,
     Tuple,
     Type,
     TypeVar,
@@ -60,11 +59,11 @@ class Field(Generic[T_API, T_ORM, T_Missing], metaclass=abc.ABCMeta):
         self,
         field_name: str,
         validate_type: bool = True,
-        validate: (
-            None
-            | Callable[[Any], Any]
-            | Iterable[Callable[[Any], Any]]
-        ) = None,
+        validate: Union[
+            None,
+            Callable[[Any], Any],
+            Iterable[Callable[[Any], Any]]
+        ] = None,
         readonly: Optional[bool] = False) -> None:
         """
         Args:
@@ -402,14 +401,14 @@ class _ListField(
     # have to overload the type annotations for __get__
 
     @overload
-    def __get__(self, instance: None, owner: Type[Any]) -> Self: ...
+    def __get__(self, instance: None, owner: Type[Any]) -> SelfType: ...
 
     @overload
     def __get__(self, instance: "Model", owner: Type[Any]) -> List[T_ORM]: ...
 
     def __get__(
         self, instance: Optional["Model"], owner: Type[Any]
-    ) -> Union[Self, List[T_ORM]]:
+    ) -> Union[SelfType, List[T_ORM]]:
         if not instance:
             return self
         return self._get_list_value(instance)

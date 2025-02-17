@@ -6,7 +6,7 @@ from typing import Dict
 
 V1 = "v1"
 V2 = "v2"
-VERSIONS = {V1: "v1", V2: "api/v2/"}
+VERSIONS = {V1: "v1", V2: "api/v2"}
 
 
 class Api:
@@ -22,7 +22,13 @@ class Api:
     api_token = os.environ["PIPEDRIVE_API_TOKEN"]
 
     def __init__(self, version=V2) -> None:
-        assert version in VERSIONS, f"Invalid version: {version} (expected {VERSIONS})"
+        """
+        Initialize the API client with the given version.
+
+        Args:
+            version (str, optional): API version. Defaults to V2.
+        """
+        assert version in VERSIONS, f"Invalid version: {version} (expected {VERSIONS.keys()})"
         self.session = Session()
         self.version = VERSIONS[version]
         self.endpoint_url = f"https://api.pipedrive.com/{self.version}/"
@@ -31,6 +37,13 @@ class Api:
         return "<pipedrive.Api>"
     
     def get(self, uri: str, params: Dict = {}) -> Response:
+        """
+        Make a GET request to the Pipedrive API.
+
+        Args:
+            uri (str): API endpoint
+            params (Dict, optional): Query parameters. Defaults to {}.
+        """
         params = {**params, "api_token": self.api_token}
         return self.session.request(
             method="GET",
@@ -39,6 +52,13 @@ class Api:
         )
     
     def post(self, uri: str, body: Dict) -> Response:
+        """
+        Make a POST request to the Pipedrive API.
+
+        Args:
+            uri (str): API endpoint
+            body (Dict): Request body
+        """
         return self.session.request(
             method="POST",
             url=self.endpoint_url + uri,
@@ -47,6 +67,13 @@ class Api:
         )
     
     def patch(self, uri: str, body: Dict) -> Response:
+        """
+        Make a PATCH request to the Pipedrive API.
+
+        Args:
+            uri (str): API endpoint
+            body (Dict): Request body
+        """
         return self.session.request(
             method="PATCH",
             url=self.endpoint_url + uri,
@@ -55,6 +82,12 @@ class Api:
         )
 
     def delete(self, uri: str) -> Response:
+        """
+        Make a DELETE request to the Pipedrive API.
+
+        Args:
+            uri (str): API endpoint
+        """
         return self.session.request(
             method="DELETE",
             url=self.endpoint_url + uri,
@@ -62,6 +95,13 @@ class Api:
         )
 
     def batch_delete(self, uri: str, ids: str) -> Response:
+        """
+        Make a batch DELETE request to the Pipedrive API.
+
+        Args:
+            uri (str): API endpoint
+            ids (str): Comma-separated string of integers
+        """
         assert ids is not None, "ids cannot be None"
         assert isinstance(ids, str), "ids must be a comma-separated string of integers"
         assert all(map(lambda x: x.isdigit(), ids.split(","))), "ids must be a comma-separated string of integers"

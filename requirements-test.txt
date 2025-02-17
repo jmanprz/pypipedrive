@@ -1,0 +1,7 @@
+# Required to run test suite
+mock
+pytest
+pytest-cov
+requests-mock
+tox
+typing_extensions==4.0.0

@@ -3,9 +3,9 @@ from typing import (
     Any,
     Optional,
     Type,
-    TypeAlias,
     TypeVar,
 )
+from typing_extensions import TypeAlias
 
 
 T = TypeVar("T")

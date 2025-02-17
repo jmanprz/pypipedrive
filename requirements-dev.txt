@@ -1,0 +1,31 @@
+# Docs
+cogapp
+Sphinx
+sphinx-autoapi
+sphinxext-opengraph
+sphinx-autodoc-typehints
+autodoc-pydantic>=2
+pytest
+sphinxcontrib-applehelp==1.0.4
+sphinxcontrib-devhelp==1.0.2
+sphinxcontrib-htmlhelp==2.0.1
+sphinxcontrib-qthelp==1.0.3
+sphinxcontrib-serializinghtml==1.1.5
+typing_extensions
+
+# Packaging
+wheel==0.38.1
+twine==3.3.0
+build==0.6.0.post1
+
+# Hooks
+pre-commit
+
+# Formatting, Linting
+black
+flake8
+
+# Type checking
+mypy
+types-requests
+types-urllib3

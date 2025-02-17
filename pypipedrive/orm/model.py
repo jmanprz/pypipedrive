@@ -59,6 +59,154 @@ class Model:
             return f"<unsaved {self.__class__.__name__}>"
         return f"<{self.__class__.__name__} id={self.id!r}>"
 
+    def to_record(self, only_writable: bool = False) -> Dict:
+        """
+        This method converts internal field values into values expected by Pipedrive.
+        For example, a ``datetime`` value is converted into an ISO 8601 string.
+
+        Warning: A limitation of this method is that ``field`` keys are the 
+        attributes names and not the Pipedrive field names. Some work need to
+        be done in order to correctly map those fields as well as set the custom
+        fields properly under the `custom_fields.api_key` key.
+
+        Args:
+            only_writable: If ``True``, the result will exclude any
+                values which are associated with readonly fields.
+        """
+        field_name_descriptor_map = self._field_name_descriptor_map()
+        map_ = {}
+        for field_name, attribute_name in self._field_name_to_attribute_map().items():
+            if attribute_name in self._fields:
+                map_[attribute_name] = field_name_descriptor_map[field_name]
+        fields = {
+            field: map_[field].missing_value if value is None else map_[field].to_record_value(value)
+            for field, value in self._fields.items()
+            if not (map_[field].readonly and only_writable)
+        }
+        add_time = self._fields.get("add_time")
+        created_at = utils.datetime_to_iso_str(add_time) if add_time else None
+        return {
+            "entity": self.Meta.entity_name,
+            "created_at": created_at,
+            "id": self.id,
+            "fields": fields}
+
+    def exists(self) -> bool:
+        """
+        Check if the instance exists in Pipedrive.
+        """
+        if not self.id:
+            return False
+        else:
+            try:
+                _ = self.get(self.id)
+                return True
+            except Exception as exc:
+                return False
+
+    def fetch(self) -> None:
+        """
+        Fetch field values from the API and resets instance field values.
+        """
+        if not self.id:
+            raise ValueError("cannot be fetched because instance does not have an id")
+
+        instance = self.get(id=self.id)
+        self._fields = instance._fields
+        self._changed.clear()
+        self._fetched = True
+
+    def save(self, *, force: bool = False) -> "SaveResult":
+        """
+        Save the model to the Pipedrive API.
+
+        If the instance does not exist already, it will be created;
+        otherwise, the existing record will be updated, using only the
+        fields which have been modified since it was retrieved.
+
+        Args:
+            force: If ``True``, all fields will be saved, even if they have not changed.
+        """
+        if self._deleted:
+            raise RuntimeError(f"{self.id} was deleted")
+
+        field_values = self.to_record(only_writable=True)["fields"]
+        api = self.get_api()
+
+        if not self.id: # Create the object.
+            created = api.post(uri=self.Meta.entity_name, body=field_values)
+            if created.ok:
+                record = created.json()["data"]
+                self.id = record["id"]
+                self.add_time = utils.datetime_from_iso_str(record["add_time"])
+                self.update_time = utils.datetime_from_iso_str(record["update_time"])
+
+                # Update instance attributes with fields returned from the API
+                # that were not set in `field_values`. E.g. `is_deleted`, `done` etc.
+                for field in set(record).difference(field_values):
+                    if record[field] is not None:
+                        setattr(self, field, record[field])
+
+                self._changed.clear()
+                return SaveResult(self.id, created=True, field_names=set(field_values))
+
+        if not force:
+            if not self._changed:
+                return SaveResult(self.id)
+            field_names_to_attribute_names = self._field_name_to_attribute_map()
+            attribute_to_field_name_map = self._attribute_to_field_name_map()
+
+            field_values = {
+                attribute_to_field_name_map.get(field_name): value
+                for field_name, value in field_values.items()
+                if self._changed.get(attribute_to_field_name_map.get(field_name))
+            }
+
+        response = api.patch(uri=f"{self.Meta.entity_name}/{self.id}", body=field_values)
+        if response.ok:
+            self._changed.clear()
+            return SaveResult(
+                self.id, forced=force, updated=True, field_names=set(field_values)
+            )
+        else:
+            raise ValueError(
+                f"Failed to save record {self.Meta.entity_name}/{self.id}. "
+                f"Status code: {response.status_code}. Reason {response.reason}. "
+                f"Error: {json.loads(response.text).get('error')}"
+            )
+
+    def delete(self) -> bool:
+        """
+        Marks the record as deleted. After 30 days, the record will be 
+        permanently deleted.
+        """
+        if not self.id:
+            raise ValueError("cannot be deleted because it does not have id")
+        api = self.get_api()
+        response = api.delete(f"{self.Meta.entity_name}/{self.id}")
+        result = response.json()
+        if response.ok:
+            self._deleted = result["success"]
+        else:
+            """
+            Trying to delete an already deleted entity returns below payload.
+            Which is why we only check for the error containing "already deleted".
+            {
+                "success": false,
+                "error": "Activity is already deleted",
+                "code": "ERR_BAD_REQUEST"
+            }
+            """
+            if "already deleted" in result["error"]:
+                logger.warning(f"{self.__class__.__name__.lower()}/{self.id} is already deleted")
+                return True
+            else:
+                raise ValueError(
+                    f"Unexpected behavior while deleting "
+                    f"{self.__class__.__name__.lower()}/{self.id}"
+                )
+        return self._deleted
+
     @classmethod
     def _get_meta(
         cls, name: str, default: Any = None, required: bool = False, call: bool = True
@@ -192,6 +340,33 @@ class Model:
         return Api()
 
     @classmethod
+    def get(cls, id: Union[int, str]) -> SelfType:
+        api = cls.get_api()
+        response = api.get(f"{cls.Meta.entity_name}/{id}")
+        if response.ok:
+            return cls.from_record(**response.json()["data"])
+        else:
+            raise ValueError(
+                f"Failed to fetch record {cls.Meta.entity_name}/{id}. "
+                f"Status code: {response.status_code}. Reason {response.reason}."
+            )
+
+    @classmethod
+    def all(cls):
+        api = cls.get_api()
+        response = api.get(f"{cls.Meta.entity_name}")
+        if response.ok:
+            records = response.json()
+            if records:
+                return [cls.from_record(**record) for record in records["data"]]
+            return []
+        else:
+            raise ValueError(
+                f"Failed to fetch record {cls.Meta.entity_name}. "
+                f"Status code: {response.status_code}. Reason {response.reason}."
+            )
+
+    @classmethod
     def from_record(cls, **record: Dict):
         """
         Build an internal instance from the Pipedrive object.
@@ -230,181 +405,6 @@ class Model:
         instance         = cls(id=instance_id)
         instance._fields = field_values
         return instance
-
-    def to_record(self, only_writable: bool = False) -> Dict:
-        """
-        This method converts internal field values into values expected by Pipedrive.
-        For example, a ``datetime`` value is converted into an ISO 8601 string.
-
-        Warning: A limitation of this method is that ``field`` keys are the 
-        attributes names and not the Pipedrive field names. Some work need to
-        be done in order to correctly map those fields as well as set the custom
-        fields properly under the `custom_fields.api_key` key.
-
-        Args:
-            only_writable: If ``True``, the result will exclude any
-                values which are associated with readonly fields.
-        """
-        field_name_descriptor_map = self._field_name_descriptor_map()
-        map_ = {}
-        for field_name, attribute_name in self._field_name_to_attribute_map().items():
-            if attribute_name in self._fields:
-                map_[attribute_name] = field_name_descriptor_map[field_name]
-        fields = {
-            field: map_[field].missing_value if value is None else map_[field].to_record_value(value)
-            for field, value in self._fields.items()
-            if not (map_[field].readonly and only_writable)
-        }
-        add_time = self._fields.get("add_time")
-        created_at = utils.datetime_to_iso_str(add_time) if add_time else None
-        return {
-            "entity": self.Meta.entity_name,
-            "created_at": created_at,
-            "id": self.id,
-            "fields": fields}
-
-    def exists(self) -> bool:
-        """
-        Check if the instance exists in Pipedrive.
-        """
-        if not self.id:
-            return False
-        else:
-            try:
-                _ = self.get(self.id)
-                return True
-            except Exception as exc:
-                return False
-
-    @classmethod
-    def get(cls, id: Union[int, str]) -> SelfType:
-        api = cls.get_api()
-        response = api.get(f"{cls.Meta.entity_name}/{id}")
-        if response.ok:
-            return cls.from_record(**response.json()["data"])
-        else:
-            raise ValueError(
-                f"Failed to fetch record {cls.Meta.entity_name}/{id}. "
-                f"Status code: {response.status_code}. Reason {response.reason}."
-            )
-
-    @classmethod
-    def all(cls):
-        api = cls.get_api()
-        response = api.get(f"{cls.Meta.entity_name}")
-        if response.ok:
-            records = response.json()
-            if records:
-                return [cls.from_record(**record) for record in records["data"]]
-            return []
-        else:
-            raise ValueError(
-                f"Failed to fetch record {cls.Meta.entity_name}. "
-                f"Status code: {response.status_code}. Reason {response.reason}."
-            )
-
-    def fetch(self) -> None:
-        """
-        Fetch field values from the API and resets instance field values.
-        """
-        if not self.id:
-            raise ValueError("cannot be fetched because instance does not have an id")
-
-        instance = self.get(id=self.id)
-        self._fields = instance._fields
-        self._changed.clear()
-        self._fetched = True
-
-    def save(self, *, force: bool = False) -> "SaveResult":
-        """
-        Save the model to the Pipedrive API.
-
-        If the instance does not exist already, it will be created;
-        otherwise, the existing record will be updated, using only the
-        fields which have been modified since it was retrieved.
-
-        Args:
-            force: If ``True``, all fields will be saved, even if they have not changed.
-        """
-        if self._deleted:
-            raise RuntimeError(f"{self.id} was deleted")
-
-        field_values = self.to_record(only_writable=True)["fields"]
-        api = self.get_api()
-
-        if not self.id: # Create the object.
-            created = api.post(uri=self.Meta.entity_name, body=field_values)
-            if created.ok:
-                record = created.json()["data"]
-                self.id = record["id"]
-                self.add_time = utils.datetime_from_iso_str(record["add_time"])
-                self.update_time = utils.datetime_from_iso_str(record["update_time"])
-
-                # Update instance attributes with fields returned from the API
-                # that were not set in `field_values`. E.g. `is_deleted`, `done` etc.
-                for field in set(record).difference(field_values):
-                    if record[field] is not None:
-                        setattr(self, field, record[field])
-
-                self._changed.clear()
-                return SaveResult(self.id, created=True, field_names=set(field_values))
-
-        if not force:
-            if not self._changed:
-                return SaveResult(self.id)
-            field_names_to_attribute_names = self._field_name_to_attribute_map()
-            attribute_to_field_name_map = self._attribute_to_field_name_map()
-
-            field_values = {
-                attribute_to_field_name_map.get(field_name): value
-                for field_name, value in field_values.items()
-                if self._changed.get(attribute_to_field_name_map.get(field_name))
-            }
-
-        response = api.patch(uri=f"{self.Meta.entity_name}/{self.id}", body=field_values)
-        if response.ok:
-            self._changed.clear()
-            return SaveResult(
-                self.id, forced=force, updated=True, field_names=set(field_values)
-            )
-        else:
-            raise ValueError(
-                f"Failed to save record {self.Meta.entity_name}/{self.id}. "
-                f"Status code: {response.status_code}. Reason {response.reason}. "
-                f"Error: {json.loads(response.text).get('error')}"
-            )
-
-    def delete(self) -> bool:
-        """
-        Marks the record as deleted. After 30 days, the record will be 
-        permanently deleted.
-        """
-        if not self.id:
-            raise ValueError("cannot be deleted because it does not have id")
-        api = self.get_api()
-        response = api.delete(f"{self.Meta.entity_name}/{self.id}")
-        result = response.json()
-        if response.ok:
-            self._deleted = result["success"]
-        else:
-            """
-            Trying to delete an already deleted entity returns below payload.
-            Which is why we only check for the error containing "already deleted".
-            {
-                "success": false,
-                "error": "Activity is already deleted",
-                "code": "ERR_BAD_REQUEST"
-            }
-            """
-            if "already deleted" in result["error"]:
-                logger.warning(f"{self.__class__.__name__.lower()}/{self.id} is already deleted")
-                return True
-            else:
-                raise ValueError(
-                    f"Unexpected behavior while deleting "
-                    f"{self.__class__.__name__.lower()}/{self.id}"
-                )
-        return self._deleted
 
     @classmethod
     def batch_delete(cls, models: List[SelfType]) -> None:
