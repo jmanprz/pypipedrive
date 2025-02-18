@@ -35,7 +35,8 @@ extensions = [
     'sphinx.ext.duration',
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
-    'sphinx.ext.autodoc'
+    'sphinx.ext.autodoc',
+    'revitron_sphinx_theme',
 ]
 
 templates_path = ['_templates']
@@ -48,7 +49,7 @@ master_doc = 'index'
 
 # html_theme = 'alabaster'
 html_title = ""
-html_theme = "furo"
+html_theme = "revitron_sphinx_theme"
 html_static_path = ['_static']
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -57,21 +58,19 @@ html_static_path = ['_static']
 
 # html_theme_options = {}
 html_theme_options = {
-    # "color_scheme": "",
-    # "canonical_url": "",
-    # "analytics_id": "UA-3836052-10",
-    # "style_external_links": False,
-    # "cols lapse_navigation": True,
-    # "sticky_navigation": True,
-    # "navigation_depth": 4,
-    # "includehidden": True,
-    # "titles_only": False,
-    # "github_url": "https://github.com/gildastone/pypipedrive",
-    # 'logo_mobile': 'demo/static/logo-mobile.svg'
-    # "logo_mobile": "_static/logo.png",
+    'color_scheme': '',
+    'canonical_url': '',
+    'analytics_id': 'UA-XXXXXXX-1',
+    'style_external_links': False,
+    'collapse_navigation': True,
+    'sticky_navigation': True,
+    'navigation_depth': 4,
+    'includehidden': True,
+    'titles_only': False,
+    'github_url': 'https://github.com/gildastone/pypipedrive',
+    'logo_mobile': '_static/logo-text.svg'
 }
 
-# html_logo = 'demo/static/logo.svg'
 html_logo = "_static/logo-text.svg"
 
 html_context = {

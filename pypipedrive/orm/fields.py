@@ -27,6 +27,7 @@ from .types import (
     MonetaryDict,
     ParticipantDict,
     AttendeeDict,
+    ItemSearchDict,
 )
 from pypipedrive import utils
 
@@ -508,3 +509,11 @@ class AttendeeField(_ValidatingListField[AttendeeDict]):
     """
 
     contains_type = AttendeeDict
+
+
+class ItemSearchField(_ValidatingListField[ItemSearchDict]):
+    """
+    Accepts a list of dicts in the format of ItemSearch.
+    """
+
+    contains_type = ItemSearchDict

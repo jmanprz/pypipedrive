@@ -2,6 +2,7 @@ import pydantic
 from typing import (
     Any,
     Optional,
+    Union,
     Type,
     TypeVar,
 )
@@ -69,3 +70,38 @@ class AttendeeDict(pydantic.BaseModel):
     is_organizer: Optional[bool] = None
     person_id:    Optional[int]  = None
     user_id:      Optional[int]  = None
+
+
+class _ItemId(pydantic.BaseModel):
+    id: Optional[int]
+
+
+class _ItemIdName(_ItemId):
+    name: Optional[str] = None
+
+
+class _ItemIdNameAddress(_ItemIdName):
+    address: Optional[str] = None
+
+
+class _ItemSearch(pydantic.BaseModel):
+    id:            Optional[Union[int, str]] = None
+    address:       Optional[str] = None
+    type:          Optional[str] = None
+    title:         Optional[str] = None
+    value:         Optional[int] = None
+    currency:      Optional[str] = None
+    status:        Optional[str] = None
+    visible_to:    Optional[int] = None
+    owner:         Optional[_ItemId] = {}
+    stage:         Optional[_ItemIdName] = {}
+    pipeline:      Optional[_ItemId] = {}
+    person:        Optional[_ItemIdName] = {}
+    organization:  Optional[_ItemIdNameAddress] = {}
+    custom_fields: Optional[list] = [] # of strings
+    notes:         Optional[list] = [] # of strings
+
+
+class ItemSearchDict(pydantic.BaseModel):
+    result_score: Optional[float]       = None
+    item:         Optional[_ItemSearch] = None

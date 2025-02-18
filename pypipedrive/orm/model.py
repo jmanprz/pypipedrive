@@ -11,6 +11,7 @@ from typing import (
     Any,
     Dict,
     List,
+    Optional,
     Union,
     Set,
 )
@@ -340,9 +341,10 @@ class Model:
         return Api()
 
     @classmethod
-    def get(cls, id: Union[int, str]) -> SelfType:
+    def get(cls, id: Union[int, str] = None, params: Dict = {}) -> SelfType:
         api = cls.get_api()
-        response = api.get(f"{cls.Meta.entity_name}/{id}")
+        uri = cls.Meta.entity_name if id is None else f"{cls.Meta.entity_name}/{id}"
+        response = api.get(uri=uri, params=params)
         if response.ok:
             return cls.from_record(**response.json()["data"])
         else:
@@ -352,9 +354,9 @@ class Model:
             )
 
     @classmethod
-    def all(cls):
+    def all(cls, params: Dict = {}) -> List[SelfType]:
         api = cls.get_api()
-        response = api.get(f"{cls.Meta.entity_name}")
+        response = api.get(uri=f"{cls.Meta.entity_name}", params=params)
         if response.ok:
             records = response.json()
             if records:
