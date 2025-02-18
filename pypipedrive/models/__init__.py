@@ -4,6 +4,7 @@ from .item_search import ItemSearch
 from .organizations import Organizations
 from .persons import Persons
 from .pipelines import Pipelines
+from .stages import Stages
 
 
 __all__ = [
@@ -13,4 +14,5 @@ __all__ = [
     "Organizations",
     "Persons",
     "Pipelines",
+    "Stages",
 ]
