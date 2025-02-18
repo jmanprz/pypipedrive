@@ -5,6 +5,7 @@ from .organizations import Organizations
 from .persons import Persons
 from .pipelines import Pipelines
 from .stages import Stages
+from .subscriptions import Subscriptions
 
 
 __all__ = [
@@ -15,4 +16,5 @@ __all__ = [
     "Persons",
     "Pipelines",
     "Stages",
+    "Subscriptions",
 ]

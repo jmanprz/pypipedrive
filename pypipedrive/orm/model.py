@@ -4,7 +4,7 @@ import dataclasses
 from functools import lru_cache
 from dataclasses import dataclass
 from pypipedrive import utils
-from pypipedrive.api import Api
+from pypipedrive.api import Api, V1, V2
 from pypipedrive.orm.fields import Field
 from pypipedrive.orm.types import FieldName
 from typing import (
@@ -337,8 +337,8 @@ class Model:
 
     @classmethod
     @lru_cache
-    def get_api(cls) -> Api:
-        return Api()
+    def get_api(cls, version=V2) -> Api:
+        return Api(version=version)
 
     @classmethod
     def get(cls, id: Union[int, str] = None, params: Dict = {}) -> SelfType:
@@ -355,7 +355,8 @@ class Model:
 
     @classmethod
     def all(cls, params: Dict = {}) -> List[SelfType]:
-        api = cls.get_api()
+        api = cls.get_api(version=cls.Meta.version)
+        print(api.endpoint_url)
         response = api.get(uri=f"{cls.Meta.entity_name}", params=params)
         if response.ok:
             records = response.json()

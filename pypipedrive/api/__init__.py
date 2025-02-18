@@ -1,1 +1,1 @@
-from .api import Api
+from .api import Api, V1, V2
