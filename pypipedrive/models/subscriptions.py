@@ -1,3 +1,4 @@
+from pypipedrive.api import V1, V2
 from pypipedrive.orm.model import Model
 from pypipedrive.orm import fields as F
 
@@ -30,9 +31,11 @@ class Subscriptions(Model):
     final_status   = F.TextField("final_status")
 
     class Meta:
-        id_name     = "id"
         entity_name = "subscriptions"
-        version     = "v1"
+        config      = {
+            "get":          [V1],  # GET    /subscriptions/{id}
+            "delete":       [V1],  # DELETE /subscriptions/{id}
+        }
 
     @classmethod
     def all(cls, *args, **kwargs) -> None:

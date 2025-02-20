@@ -14,7 +14,13 @@ class Api:
     Pipedrive API client for https://developers.pipedrive.com/docs/api/v1
     documentation.
 
-    Supports only the Piperive API V2 version.
+    Supports the Piperive API V1 and V2 versions. By default, the ``Api``
+    instance is initialized with the V2 version. When the Model doesn't
+    support it, it fallbacks to the V1 version. However, it is possible to 
+    force the usage of V1 version:
+
+    >>> from pypipedrive.api import Api, V1
+    >>> Api(version=V1)
     """
 
     if "PIPEDRIVE_API_TOKEN" not in os.environ:
@@ -34,7 +40,7 @@ class Api:
         self.endpoint_url = f"https://api.pipedrive.com/{self.version}/"
     
     def __repr__(self) -> str:
-        return "<pipedrive.Api>"
+        return f"<pypipedrive.{self.__class__} version={self.version}>"
     
     def get(self, uri: str, params: Dict = {}) -> Response:
         """

@@ -1,3 +1,4 @@
+from pypipedrive.api import V1, V2
 from pypipedrive.orm.model import Model
 from pypipedrive.orm import fields as F
 
@@ -22,5 +23,12 @@ class Stages(Model):
     update_time         = F.DatetimeField("update_time")
 
     class Meta:
-        id_name     = "id"
         entity_name = "stages"
+        config      = {
+            "get":          [V1, V2], # GET    /stages/{id}
+            "all":          [V1, V2], # GET    /stages
+            "save":         [V1, V2], # POST   /stages
+            "update":       [V1, V2], # PATCH  /stages/{id}
+            "delete":       [V1, V2], # DELETE /stages/{id}
+            "batch_delete": [V1]      # DELETE /stages
+        }

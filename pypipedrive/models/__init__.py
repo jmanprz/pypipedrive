@@ -1,4 +1,5 @@
 from .activities import Activities
+from .activity_fields import ActivityFields
 from .deals import Deals
 from .item_search import ItemSearch
 from .organizations import Organizations
@@ -10,6 +11,7 @@ from .subscriptions import Subscriptions
 
 __all__ = [
     "Activities",
+    "ActivityFields",
     "Deals",
     "ItemSearch",
     "Organizations",

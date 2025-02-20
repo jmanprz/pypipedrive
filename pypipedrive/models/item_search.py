@@ -1,3 +1,4 @@
+from pypipedrive.api import V1, V2
 from pypipedrive.orm.model import Model
 from pypipedrive.orm import fields as F
 
@@ -14,8 +15,10 @@ class ItemSearch(Model):
     items         = F.ItemSearchField("items")
 
     class Meta:
-        id_name     = "id"
         entity_name = "itemSearch"
+        config      = {
+            "all":          [V1, V2], # GET    /iteamSearch
+        }
 
     @classmethod
     def all(cls, *args, **kwargs) -> None:

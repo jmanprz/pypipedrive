@@ -1,3 +1,4 @@
+from pypipedrive.api import V1, V2
 from pypipedrive.orm.model import Model
 from pypipedrive.orm import fields as F
 
@@ -15,5 +16,12 @@ class Organizations(Model):
     address     = F.AddressField("address")
 
     class Meta:
-        id_name       = "id"
-        entity_name   = "organizations"
+        entity_name = "organizations"
+        config      = {
+            "get":          [V1, V2], # GET    /organizations/{id}
+            "all":          [V1, V2], # GET    /organizations
+            "save":         [V1, V2], # POST   /organizations
+            "update":       [V1, V2], # PATCH  /organizations/{id}
+            "delete":       [V1, V2], # DELETE /organizations/{id}
+            "batch_delete": [V1]      # DELETE /organizations
+        }

@@ -105,3 +105,8 @@ class _ItemSearch(pydantic.BaseModel):
 class ItemSearchDict(pydantic.BaseModel):
     result_score: Optional[float]       = None
     item:         Optional[_ItemSearch] = None
+
+
+class IdLabelDict(pydantic.BaseModel):
+    id:    Optional[int] = None
+    label: Optional[str] = None

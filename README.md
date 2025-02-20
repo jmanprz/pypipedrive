@@ -10,6 +10,11 @@
 
 [Pipedrive](https://pipedrive.com) is the developer-friendly CRM solution.
 
+## TODO
+
+- Add pagination to /collection endpoints
+- Add properties to entities to fetch related objects
+
 ## Package setup
 
 See [dev.to](https://dev.to/abdellahhallou/create-and-release-a-private-python-package-on-github-2oae) thread.

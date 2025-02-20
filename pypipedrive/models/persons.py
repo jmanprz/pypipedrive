@@ -1,3 +1,4 @@
+from pypipedrive.api import V1, V2
 from pypipedrive.orm.model import Model
 from pypipedrive.orm import fields as F
 
@@ -25,5 +26,12 @@ class Persons(Model):
     birthday       = F.DateField("birthday")
 
     class Meta:
-        id_name       = "id"
-        entity_name   = "persons"
+        entity_name = "persons"
+        config      = {
+            "get":          [V1, V2], # GET    /persons/{id}
+            "all":          [V1, V2], # GET    /persons
+            "save":         [V1, V2], # POST   /persons
+            "update":       [V1, V2], # PATCH  /persons/{id}
+            "delete":       [V1, V2], # DELETE /persons/{id}
+            "batch_delete": [V1]      # DELETE /persons
+        }

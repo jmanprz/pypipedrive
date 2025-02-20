@@ -18,9 +18,9 @@ autoapi_dirs = [os.path.join(root_dir, "pypipedrive")]
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'pyPipedrive'
-copyright = '2025, Gildas Tone'
-author = 'Gildas Tone'
+project = "pyPipedrive"
+copyright = "2025, Gildas Tone"
+author = "Gildas Tone"
 release = version
 
 __version__ = version.split("-", 0)
@@ -32,25 +32,25 @@ __release__ = version
 # import revitron_sphinx_theme
 
 extensions = [
-    'sphinx.ext.duration',
-    'sphinx.ext.todo',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.autodoc',
-    'revitron_sphinx_theme',
+    "sphinx.ext.duration",
+    "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.autodoc",
+    "revitron_sphinx_theme",
 ]
 
-templates_path = ['_templates']
+templates_path = ["_templates"]
 exclude_patterns = []
 
-master_doc = 'index'
+master_doc = "index"
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-# html_theme = 'alabaster'
+# html_theme = "alabaster"
 html_title = ""
 html_theme = "revitron_sphinx_theme"
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -58,17 +58,17 @@ html_static_path = ['_static']
 
 # html_theme_options = {}
 html_theme_options = {
-    'color_scheme': '',
-    'canonical_url': '',
-    'analytics_id': 'UA-XXXXXXX-1',
-    'style_external_links': False,
-    'collapse_navigation': True,
-    'sticky_navigation': True,
-    'navigation_depth': 4,
-    'includehidden': True,
-    'titles_only': False,
-    'github_url': 'https://github.com/gildastone/pypipedrive',
-    'logo_mobile': '_static/logo-text.svg'
+    "color_scheme": "",
+    "canonical_url": "",
+    "analytics_id": "UA-XXXXXXX-1",
+    "style_external_links": False,
+    "collapse_navigation": True,
+    "sticky_navigation": True,
+    "navigation_depth": 4,
+    "includehidden": True,
+    "titles_only": False,
+    "github_url": "https://github.com/gildastone/pypipedrive",
+    "logo_mobile": "_static/logo-text.svg"
 }
 
 html_logo = "_static/logo-text.svg"
@@ -76,8 +76,8 @@ html_logo = "_static/logo-text.svg"
 html_context = {
     "landing_page": {
         "menu": [
-            {"title": "Pipedrive Api Docs", "url": "https://developers.pipedrive.com/docs/api"},
-            # {"title": "♡ Sponsor", "url": "https://github.com/sponsors/gtalarico"},
+            # {"title": "Pipedrive Api Docs", "url": "https://developers.pipedrive.com/docs/api"},
+            # {"title": "♡ Sponsor", "url": "https://github.com/sponsors/gildastone"},
         ]
     },
     "docs_source_path": "docs/source",
@@ -98,6 +98,6 @@ html_sidebars = {}
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ['_static']
+# html_static_path = ["_static"]
 # html_css_files = ["custom.css"]
 # html_js_files = []

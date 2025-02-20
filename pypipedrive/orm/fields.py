@@ -28,6 +28,7 @@ from .types import (
     ParticipantDict,
     AttendeeDict,
     ItemSearchDict,
+    IdLabelDict,
 )
 from pypipedrive import utils
 
@@ -517,3 +518,11 @@ class ItemSearchField(_ValidatingListField[ItemSearchDict]):
     """
 
     contains_type = ItemSearchDict
+
+
+class OptionsField(_ValidatingListField[IdLabelDict]):
+    """
+    Accepts a list of dicts in the format of IdLabelDict.
+    """
+
+    contains_type = IdLabelDict
