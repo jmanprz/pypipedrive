@@ -1,4 +1,4 @@
-pyPipedrive
+pypipedrive
 ===========
 
 .. container:: .large
@@ -8,7 +8,7 @@ pyPipedrive
 .. container:: .buttons
 
    `Docs <getting-started.html>`_
-   `GitHub <https://github.com/gildastone/pypipedrive>`_
+   `GitHub <https://github.com/jmanprz/pypipedrive>`_
 
 
    Version: |version|
@@ -30,6 +30,6 @@ pyPipedrive
    about
    migrations
    changelog
-   GitHub <https://github.com/gildastone/pypipedrive>
-   PyPI <https://pypi.org/project/pyPipedrive/>
+   GitHub <https://github.com/jmanprz/pypipedrive>
+   PyPI <https://pypi.org/project/pypipedrive/>
    Pipedrive API <https://docs.pipedrive.com/docs/api>

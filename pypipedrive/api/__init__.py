@@ -1,5 +1,6 @@
 from .api import (
     Api,
+    ApiResponse,
     V1,
     V2,
     VERSIONS,

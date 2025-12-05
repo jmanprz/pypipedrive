@@ -2,6 +2,6 @@
 
    .. warning::
 
-      This documentation was generated for an unreleased build of pyPipedrive,
+      This documentation was generated for an unreleased build of pypipedrive,
       and might describe unreleased features. For the latest released version, see
       https://pypipedrive.readthedocs.io/en/stable/

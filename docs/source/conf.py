@@ -18,9 +18,9 @@ autoapi_dirs = [os.path.join(root_dir, "pypipedrive")]
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "pyPipedrive"
-copyright = "2025, Gildas Tone"
-author = "Gildas Tone"
+project = "pypipedrive"
+copyright = "2025, Juan Manuel M. Pérez"
+author = "Juan Manuel M. Pérez <jm@magicalpotion.io>"
 release = version
 
 __version__ = version.split("-", 0)
@@ -67,7 +67,7 @@ html_theme_options = {
     "navigation_depth": 4,
     "includehidden": True,
     "titles_only": False,
-    "github_url": "https://github.com/gildastone/pypipedrive",
+    "github_url": "https://github.com/jmanprz/pypipedrive",
     "logo_mobile": "_static/logo-text.svg"
 }
 
@@ -77,7 +77,7 @@ html_context = {
     "landing_page": {
         "menu": [
             # {"title": "Pipedrive Api Docs", "url": "https://developers.pipedrive.com/docs/api"},
-            # {"title": "♡ Sponsor", "url": "https://github.com/sponsors/gildastone"},
+            # {"title": "♡ Sponsor", "url": "https://github.com/sponsors/jmanprz"},
         ]
     },
     "docs_source_path": "docs/source",

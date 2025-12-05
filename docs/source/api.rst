@@ -16,7 +16,7 @@ API: pypipedrive
 API: pypipedrive.exceptions
 *******************************
 
-.. automodule:: pypipedrive.exceptions
+.. automodule:: pypipedrive.api.exceptions
     :members:
 
 API: pypipedrive.models

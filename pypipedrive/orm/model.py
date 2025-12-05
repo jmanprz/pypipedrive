@@ -1,25 +1,68 @@
-import json
+import os
 import logging
-import dataclasses
+import pydantic
 from functools import lru_cache
-from dataclasses import dataclass
 from pypipedrive import utils
-from pypipedrive.api import Api, V1, V2
+from pypipedrive.api import Api, ApiResponse
 from pypipedrive.orm.fields import Field
-from pypipedrive.orm.types import FieldName
-from typing import (
-    Any,
-    Dict,
-    List,
-    Optional,
-    Union,
-    Set,
-)
-from typing_extensions import Self as SelfType
+from pypipedrive.orm.types import FieldName, ItemSearchDict, EntityUpdateDict
+from typing import Any, Dict, List, Optional, Union, Set
+from typing_extensions import Self
 
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
+
+
+class SaveResult(pydantic.BaseModel):
+    """
+    Represents the result of saving a record to the API. The result's
+    attributes contain more granular information about the save operation:
+
+        >>> result = model.save()
+        >>> result.id
+        123
+        >>> result.created
+        False
+        >>> result.updated
+        True
+        >>> result.forced
+        False
+        >>> result.field_names
+        {'Name', 'Email'}
+
+    If none of the model's fields have changed, calling :meth:`~pipedrive.orm.Model.save`
+    will not perform any API requests and will return a SaveResult with no changes.
+
+        >>> model = Model()
+        >>> result = model.save()
+        >>> result.saved
+        True
+        >>> second_result = model.save()
+        >>> second_result.saved
+        False
+    """
+
+    id:        Union[int, str]
+    created:   bool = False
+    updated:   bool = False
+    forced:    bool = False
+    field_names: Set[FieldName] = pydantic.Field(default_factory=set)
+
+    def __bool__(self) -> bool:
+        """
+        Returns ``True`` if the record was created.
+        """
+        return self.created
+
+    @property
+    def saved(self) -> bool:
+        """
+        Whether the record was saved to the API. If ``False``, this indicates there
+        were no changes to the model and the :meth:`~pipedrive.orm.Model.save`
+        operation was not forced.
+        """
+        return self.created or self.updated
 
 
 class Model:
@@ -30,6 +73,7 @@ class Model:
 
     _deleted: bool = False
     _fetched: bool = False
+    _init:    bool = False  # Indicates if the instance is being initialized
     _fields:  Dict[FieldName, Any]
     _changed: Dict[FieldName, bool]
 
@@ -37,9 +81,19 @@ class Model:
         """
         `fields` is a dictionary of Pipedrive record field names to fields.
         """
+        # Indicate that initialization is in progress. Used to bypass raise when
+        # field is read-only.
+        self._init = True
         self._fields: Dict[str, Any] = {}
         try:
-            self.id = fields.pop("id")
+            # Populate internal storage for `id` directly to avoid triggering
+            # Field.__set__ (which enforces readonly). This is intentional so
+            # that constructing models from API records (which may include
+            # readonly fields like `id`) does not raise during initialization.
+            value_id = fields.pop("id")
+            id_field = getattr(type(self), "id", None)
+            key = getattr(id_field, "_attribute_name", "id") if id_field is not None else "id"
+            self._fields[key] = value_id
         except KeyError:
             pass
 
@@ -50,20 +104,35 @@ class Model:
 
         # Only start tracking changes after the object is created
         self._changed ={}
+        # Initialization complete
+        self._init = False
 
     def __init_subclass__(cls, **kwargs: Any):
         cls._validate_class()
         super().__init_subclass__(**kwargs)
 
     def __repr__(self) -> str:
-        if not self.id:
+        id = self._get_id()
+        if not id:
             return f"<unsaved {self.__class__.__name__}>"
-        return f"<{self.__class__.__name__} id={self.id!r}>"
+        return f"<{self.__class__.__name__} id={id!r}>"
+
+    def _get_id(self) -> Optional[Union[int, str]]:
+        """
+        Get the instance ID. Helper method to lookup the Meta.field_id attribute.
+        """
+        field_id = self._get_meta("field_id")
+        if field_id is None:
+            return self.id
+        return getattr(self, field_id, None)
 
     @classmethod
     def _get_meta(
-        cls, name: str, default: Any = None, required: bool = False, call: bool = True
-    ) -> Any:
+        cls,
+        name: str,
+        default: Any = None,
+        required: bool = False,
+        call: bool = True) -> Any:
         """
         Retrieves the value of a Meta attribute.
 
@@ -87,14 +156,20 @@ class Model:
 
     @classmethod
     def _validate_class(cls) -> None:
-        # Verify required Meta attributes were set (but don't call any callables)
+        """
+        Validate the model class to ensure it meets required criteria.
+        """
+        # Check that required Meta attributes are set (but don't call any callables)
         assert cls._get_meta("entity_name", required=True, call=False)
-        assert cls._get_meta("config", required=True, call=False)
+        assert cls._get_meta("version", required=True, call=False)
 
         model_attributes = [a for a in cls.__dict__.keys() if not a.startswith("__")]
-        # Skip Model method all and get used to fetch records to allow overridden
-        # it at the model level.
-        model_keys = [k for k in Model.__dict__.keys() if k not in ["all", "get"]]
+        # Model methods allowed to be overridden at the model level.
+        ALLOWED_OVERRIDE_METHODS = [
+            "all", "iterator", "get", "save", "update", "delete",
+            "batch_delete", "files", "changelog"
+        ]
+        model_keys = [k for k in Model.__dict__.keys() if k not in ALLOWED_OVERRIDE_METHODS]
         overridden = set(model_attributes).intersection(model_keys)
         if overridden:
             raise ValueError(
@@ -186,25 +261,6 @@ class Model:
         }
 
     @classmethod
-    def _get_method_version(cls, method: str, version: str = None) -> str:
-        """
-        Get the version of the Pipedrive API that supports the given method.
-
-        Args:
-            method (str): The method to check for support.
-            version (str): The version of the API to use. If ``None``, the 
-                           latest version that supports the method will be used.
-        """
-        versions = cls.Meta.config.get(method)
-        if not versions:
-            raise ValueError(f"{cls.__name__} does not support {method}")
-        if version is None:
-            return versions[-1]
-        if version not in versions:
-            raise ValueError(f"{cls.__name__} does not support {method}/{version}")
-        return version
-
-    @classmethod
     def from_record(cls, **record: Dict):
         """
         Build an internal instance from the Pipedrive object.
@@ -223,7 +279,7 @@ class Model:
         # Get model custom fields based on attribute's names
         custom_fields_model = {
             k:v for k,v in cls._attribute_descriptor_map().items()
-            if k.startswith("custom_")
+            if k.startswith("custom_") and k not in ["custom_fields", "custom_view_id"]
         }
 
         # Set defined model custom fields into model field values
@@ -252,7 +308,7 @@ class Model:
         Warning: A limitation of this method is that ``field`` keys are the 
         attributes names and not the Pipedrive field names. Some work need to
         be done in order to correctly map those fields as well as set the custom
-        fields properly under the `custom_fields.api_key` key.
+        fields properly under the `custom_fields` key.
 
         Args:
             only_writable: If ``True``, the result will exclude any
@@ -271,26 +327,32 @@ class Model:
         add_time = self._fields.get("add_time")
         created_at = utils.datetime_to_iso_str(add_time) if add_time else None
         return {
-            "entity": self.Meta.entity_name,
+            "entity":     self._get_meta("entity_name"),
             "created_at": created_at,
-            "id": self.id,
-            "fields": fields
+            "id":         self._get_id(),
+            "fields":     fields
         }
 
     @classmethod
     @lru_cache
-    def get_api(cls, version=V2) -> Api:
-        return Api(version=version)
+    def get_api(cls, version: str = None) -> Api:
+        if "PIPEDRIVE_API_TOKEN" not in os.environ:
+            raise ValueError("PIPEDRIVE_API_TOKEN environment variable is not set")
+        return Api(
+            api_token=os.environ["PIPEDRIVE_API_TOKEN"],
+            version=cls._get_meta(name="version") if version is None else version
+        )
 
     def exists(self) -> bool:
         """
         Check if the instance exists in Pipedrive.
         """
-        if not self.id:
+        id = self._get_id()
+        if not id:
             return False
         else:
             try:
-                _ = self.get(self.id)
+                _ = self.get(id=id)
                 return True
             except Exception as exc:
                 return False
@@ -299,85 +361,122 @@ class Model:
         """
         Fetch field values from the API and resets instance field values.
         """
-        if not self.id:
-            raise ValueError("cannot be fetched because instance does not have an id")
+        id = self._get_id()
+        if not id:
+            raise ValueError("cannot be fetched: instance does not have an `id`")
 
-        instance = self.get(id=self.id)
+        instance = self.get(id=id)
         self._fields = instance._fields
         self._changed.clear()
         self._fetched = True
 
     @classmethod
-    def get(cls, id: Union[int, str] = None, params: Dict = {}, version: str = None) -> SelfType:
-        version = cls._get_method_version(method="get", version=version)
-        api = cls.get_api(version=version)
-        print(f"Version : {version} for api {api}")
-        uri = cls.Meta.entity_name if id is None else f"{cls.Meta.entity_name}/{id}"
-        response = api.get(uri=uri, params=params)
-        if response.ok:
-            return cls.from_record(**response.json()["data"])
+    def get(cls, id: Union[int, str] = None, params: Dict = {}) -> Self:
+        if id is None:
+            raise ValueError("id must be provided to fetch a single record")
+        api = cls.get_api()
+        entity_name = cls._get_meta("entity_name")
+        uri = entity_name if id is None else f"{entity_name}/{id}"
+        response: ApiResponse = api.get(uri=uri, params=params)
+        if response.success:
+            if isinstance(response.data, list):
+                if len(response.data) > 1:
+                    raise ValueError(
+                        f"Expected a single record for {entity_name}/{id}, "
+                        f"but got {len(response.data)} records."
+                    )
+            return cls.from_record(**response.data)
         else:
-            raise ValueError(
-                f"Failed to fetch record {cls.Meta.entity_name}/{id}. "
-                f"Status code: {response.status_code}. Reason {response.reason}."
-            )
+            raise ValueError(f"Failed to fetch record {entity_name}/{id}.")
 
     @classmethod
-    def all(cls, params: Dict = {}, version: str = None) -> List[SelfType]:
-        version = cls._get_method_version(method="all", version=version)
-        api = cls.get_api(version=version)
-        print(api.endpoint_url)
-        response = api.get(uri=f"{cls.Meta.entity_name}", params=params)
-        if response.ok:
-            records = response.json()
-            if records:
-                return [cls.from_record(**record) for record in records["data"]]
-            return []
-        else:
-            raise ValueError(
-                f"Failed to fetch record {cls.Meta.entity_name}. "
-                f"Status code: {response.status_code}. Reason {response.reason}."
-            )
+    def all(cls, uri: str = None, params: Dict = {}) -> Union[List[Self], Dict]:
+        results: List[Self] = []
+        uri = cls._get_meta("entity_name") if uri is None else uri
+        iterator = cls.get_api().iterator(uri=uri, params=params)
+        for page in iterator:
+            if isinstance(page.data, list):
+                if uri is None:
+                    results.extend([cls.from_record(**record) for record in page.data])
+                # Return data as if since payload is {id: int, field: ...}
+                # where field is the field searched by field search (dynamic).
+                elif uri == "itemSearch/field":
+                    results.extend(page.data)
+                elif uri.endswith("/changelog"):
+                    results.extend([EntityUpdateDict(**record) for record in page.data])
+                elif uri.endswith("/files"):
+                    # Avoid circular import
+                    from pypipedrive.models.files import Files
+                    results.extend([Files(**record) for record in page.data])
+                else:
+                    results.extend([cls.from_record(**record) for record in page.data])
+            elif isinstance(page.data, dict):
+                items = page.data.get("items") or []
 
-    def save(self, *, force: bool = False, version: str = None) -> "SaveResult":
+                if uri == "itemSearch":
+                    related_items = page.data.get("related_items") or []
+                    results.extend([
+                        cls(
+                            items=[ItemSearchDict(**item) for item in items],
+                            related_items=[ItemSearchDict(**item) for item in related_items]
+                        )
+                    ])
+                else:
+                    logger.warning(f"Unknown search type in URI {uri} for {len(items)} items")
+                    break
+        return results
+
+    def save(self, *, force: bool = False, additional_params: Dict = {}) -> SaveResult:
         """
-        Save the model to the Pipedrive API.
+        Create/Save the resource into Pipedrive.
 
-        If the instance does not exist already, it will be created;
-        otherwise, the existing record will be updated, using only the
-        fields which have been modified since it was retrieved.
+        If the instance does not exist already, it will be created. Otherwise, 
+        the existing record will be updated, using only the fields which have 
+        been modified since it was retrieved.
 
         Args:
             force: If ``True``, all fields will be saved, even if they have not changed.
+            additional_params: Additional parameters for saving the resource.
         """
+        assert isinstance(additional_params, dict), "`additional_params` must be a dictionary"
         if self._deleted:
             raise RuntimeError(f"{self.id} was deleted")
 
-        field_values = self.to_record(only_writable=True)["fields"]
+        field_values: Dict = self.to_record(only_writable=True)["fields"]
+        version = self._get_meta("version")
+        entity_name = self._get_meta("entity_name")
+        api = self.get_api(version=version)
 
-        if not self.id: # Create the object.
-            version = self._get_method_version(method="save", version=version)
-            api = self.get_api(version=version)
-            created = api.post(uri=self.Meta.entity_name, body=field_values)
-            if created.ok:
-                record = created.json()["data"]
-                self.id = record["id"]
-                self.add_time = utils.datetime_from_iso_str(record["add_time"])
-                self.update_time = utils.datetime_from_iso_str(record["update_time"])
+        # Create the a resource in Pipedrive.
+        id = self._get_id()
+        if not id:
+            if additional_params:
+                field_values.update(additional_params)
+            response : ApiResponse = api.post(uri=entity_name, json=field_values)
+            self._init = True  # Bypass readonly checks during initialization
+            record: Dict = response.data
+            field_id = self._get_meta("field_id")
+            self.id = record.get("id" if field_id is None else field_id)
+            self.add_time = utils.datetime_from_iso_str(record.get("add_time", None))
+            self.update_time = utils.datetime_from_iso_str(record.get("update_time", None))
 
-                # Update instance attributes with fields returned from the API
-                # that were not set in `field_values`. E.g. `is_deleted`, `done` etc.
-                for field in set(record).difference(field_values):
-                    if record[field] is not None:
-                        setattr(self, field, record[field])
+            # Update instance attributes with fields returned from the API
+            # that were not set in `field_values`. E.g. `is_deleted`, `done` etc.
+            for field in set(record).difference(field_values):
+                if record[field] is not None:
+                    setattr(self, field, record[field])
 
-                self._changed.clear()
-                return SaveResult(self.id, created=True, field_names=set(field_values))
+            self._init = False
+            self._changed.clear()
+            return SaveResult(id=self.id, created=True, field_names=set(field_values))
 
+        # Update the existing resource in Pipedrive.
+        # Improvement: separate save/create and update methods
         if not force:
-            if not self._changed:
-                return SaveResult(self.id)
+            if not self._changed and additional_params == {}:
+                return SaveResult(id=id) # Nothing to update and not forcing
 
+            # Only include changed fields in the update payload
             attribute_to_field_name_map = self._attribute_to_field_name_map()
             field_values = {
                 attribute_to_field_name_map.get(field_name): value
@@ -385,126 +484,61 @@ class Model:
                 if self._changed.get(attribute_to_field_name_map.get(field_name))
             }
 
-        version = self._get_method_version(method="update", version=version)
-        api = self.get_api(version=version)
-        response = api.patch(uri=f"{self.Meta.entity_name}/{self.id}", body=field_values)
-        if response.ok:
-            self._changed.clear()
-            return SaveResult(
-                self.id, forced=force, updated=True, field_names=set(field_values)
-            )
-        else:
-            raise ValueError(
-                f"Failed to save record {self.Meta.entity_name}/{self.id}. "
-                f"Status code: {response.status_code}. Reason {response.reason}. "
-                f"Error: {json.loads(response.text).get('error')}"
-            )
+        uri = f"{entity_name}/{id}"
+        method = api.update_method()
+        if additional_params:
+            field_values.update(additional_params)
+        response: ApiResponse = method(uri=uri, json=field_values)
 
-    def delete(self, version: str = None) -> bool:
+        self._changed.clear()
+        return SaveResult(
+            id          = id,
+            updated     = True,
+            forced      = force,
+            field_names = set(field_values)
+        )
+
+    def delete(self) -> bool:
         """
         Marks the record as deleted. After 30 days, the record will be 
         permanently deleted.
         """
         if not self.id:
             raise ValueError("cannot be deleted because it does not have id")
-        version = self._get_method_version(method="delete", version=version)
-        api = self.get_api(version=version)
-        response = api.delete(f"{self.Meta.entity_name}/{self.id}")
-        result = response.json()
-        if response.ok:
-            self._deleted = result["success"]
-        else:
-            """
-            Trying to delete an already deleted entity returns below payload.
-            Which is why we only check for the error containing "already deleted".
-            {
-                "success": false,
-                "error": "Activity is already deleted",
-                "code": "ERR_BAD_REQUEST"
-            }
-            """
-            if "already deleted" in result["error"]:
-                logger.warning(f"{self.__class__.__name__.lower()}/{self.id} is already deleted")
-                return True
-            else:
-                raise ValueError(
-                    f"Unexpected behavior while deleting "
-                    f"{self.__class__.__name__.lower()}/{self.id}"
-                )
+        api = self.get_api(version=self._get_meta("version"))
+        response: ApiResponse = api.delete(f"{self._get_meta('entity_name')}/{self.id}")
+        self._deleted = response.success
         return self._deleted
 
     @classmethod
-    def batch_delete(cls, models: List[SelfType]) -> None:
+    def batch_delete(
+        cls,
+        ids: List[Union[int, str]] = [],
+        models: List[Self] = [],
+        version: str = None) -> ApiResponse:
         """
         Marks multiple entities as deleted. After 30 days, the entities will
-        be permanently deleted.
+        be permanently deleted. `ids` and `models` are mutually exclusive.
 
         Args:
+            ids: A list of model IDs to delete.
             models: A list of model instances to delete.
         """
-        if not all(model.id for model in models):
-            raise ValueError("cannot delete an unsaved model")
-        if not all(isinstance(model, cls) for model in models):
-            raise TypeError(set(type(model) for model in models))
-        ids = ",".join([str(model.id) for model in models])
-        version = cls._get_method_version(method="batch_delete", version=version)
-        api = cls.get_api(version=version)
-        response = api.batch_delete(uri=f"{cls.Meta.entity_name}", ids=ids)
-        if response.ok:
-            return True
-        else:
-            raise ValueError(
-                f"Failed to batch delete {cls.Meta.entity_name}. "
-                f"Status code: {response.status_code}. Reason {response.reason}."
-            )
+        if not ids and not models:
+            raise ValueError("either `ids` or `models` must be provided")
+        if ids and models:
+            raise ValueError("only one of `ids` or `models` can be provided")
+        
+        if ids:  # Delete by ids. Make sure all ids are integers or strings.
+            assert all(isinstance(id_, (int, str)) for id_ in ids), \
+                "all `ids` must be integers or strings"
+        else:  # Delete by models. Make sure all models are same type with ids.
+            if not all(isinstance(model, cls) for model in models):
+                raise TypeError(set(type(model) for model in models))
+            if not all(isinstance(model.id, int) for model in models):
+                raise ValueError("cannot delete an unsaved model")
+            ids = [model.id for model in models]
 
-@dataclass(frozen=True)
-class SaveResult:
-    """
-    Represents the result of saving a record to the API. The result's
-    attributes contain more granular information about the save operation:
-
-        >>> result = model.save()
-        >>> result.id
-        123
-        >>> result.created
-        False
-        >>> result.updated
-        True
-        >>> result.forced
-        False
-        >>> result.field_names
-        {'Name', 'Email'}
-
-    If none of the model's fields have changed, calling :meth:`~pipedrive.orm.Model.save`
-    will not perform any API requests and will return a SaveResult with no changes.
-
-        >>> model = YourModel()
-        >>> result = model.save()
-        >>> result.saved
-        True
-        >>> second_result = model.save()
-        >>> second_result.saved
-        False
-    """
-
-    id:        int
-    created:   bool = False
-    updated:   bool = False
-    forced:    bool = False
-    field_names: Set[FieldName] = dataclasses.field(default_factory=set)
-
-    def __bool__(self) -> bool:
-        """
-        Returns ``True`` if the record was created.
-        """
-        return self.created
-
-    @property
-    def saved(self) -> bool:
-        """
-        Whether the record was saved to the API. If ``False``, this indicates there
-        were no changes to the model and the :meth:`~pipedrive.orm.Model.save`
-        operation was not forced.
-        """
-        return self.created or self.updated
+        version = cls._get_meta("version") if version is None else version
+        uri     = cls._get_meta("entity_name")
+        return cls.get_api(version=version).batch_delete(uri=uri, ids=ids)

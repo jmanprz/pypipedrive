@@ -1,64 +1,61 @@
-# pyPipedrive
+# pypipedrive
 
-![CI](https://github.com/gildastone/pypipedrive/actions/workflows/ci_pipeline.yml/badge.svg)
+![CI](https://github.com/jmanprz/pypipedrive/actions/workflows/ci_pipeline.yml/badge.svg)
 [![PyPI](https://img.shields.io/pypi/v/pypipedrive-client.svg)](https://pypi.org/project/pypipedrive-client/)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/pypipedrive-client.svg?label=downloads)](https://pypi.org/project/pypipedrive-client/)
 [![Documentation Status](https://readthedocs.org/projects/pypipedrive/badge/?version=latest)](http://pypipedrive.readthedocs.io/en/latest/?badge=latest)
-[![codecov](https://codecov.io/gh/gildastone/pypipedrive/graph/badge.svg?token=8M4SGDOYGL)](https://codecov.io/gh/gildastone/pypipedrive)
+[![codecov](https://codecov.io/gh/jmanprz/pypipedrive/graph/badge.svg?token=8M4SGDOYGL)](https://codecov.io/gh/jmanprz/pypipedrive)
 
-## Pipedrive API SDK
+Python client for the Pipedrive V1/V2 API. Don't worry about which endpoint version to call, this SDK handles it for you.
 
-[Pipedrive](https://pipedrive.com) is the developer-friendly CRM solution.
+## Pipedrive V1/V2 API SDK
 
-## TODO
+[Pipedrive](https://pipedrive.com) is the developer-friendly CRM solution. Read its [Pipedrive API Reference](https://developers.pipedrive.com/docs/api/v1).
 
-- Add pagination to /collection endpoints
-- Add properties to entities to fetch related objects
-
-## Package setup
-
-See [dev.to](https://dev.to/abdellahhallou/create-and-release-a-private-python-package-on-github-2oae) thread.
-
-### Installation
+## Installation
 
 ```sh
-pip install git+https://{{ your access token }}@github.com/gildastone/pypipedrive.git@{{ tag/version }}#egg=pypipedrive
+% pip install pypipedrive
 ```
 
-### Limitations
+## Documentation
 
-- Unable to upate the `custom_fields`.
-- Only for Pipedrive V2 API
+The full documentation can be found at [pypipedrive.readthedocs.io](https://pypipedrive.readthedocs.io).
 
-### Building the package
+## Contributing
+
+Want to contribute or make a suggestion? Feel free. But don't forget to adhere to the guidelines and expectations set forth in the [Contributor Covenant](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
+
+### Getting started
+
+If it's your first time working on this library, clone the repo and make sure first that you can successfully run tests on your local machine. If that doesn't work out of the box, please check your local development environment before filing an issue.
+
+Below command runs the test suite, code coverage and `/docs` build.
 
 ```sh
-python -m build
+% tox
 ```
 
-### Installing the Revitron theme
+### Reporting a bug
 
-```
-pip install https://github.com/revitron/revitron-sphinx-theme/archive/master.zip
-```
+[Submit an issue](https://github.com/jmanprz/pypipedrive/issues/new) to let the community know about bugs. The Pipedrive API evolves constantly, specially in their current V1 to V2 migration.
 
-### Building the docs
+Make sure to follow these steps along the submission:
 
-The [Sphinx](https://www.sphinx-doc.org/) is used to generate the docs. `builder` is one of the supported builders, e.g. html, latex or linkcheck.
+1. You're on the latest version of the library and you're able run the test suite locally.
+2. Check [open issues](https://github.com/jmanprz/pypipedrive/issues) for a duplicate issue.
+3. Provide context: expected vs. actual behavior, steps to reproduce, and runtime environment.
+4. When possible, provide code to reproduce the problem that you can share in the issue summary.
 
-```
-make builder
-```
+For security vulnerabilities, share them _directly_ to the maintainers via email.
 
-To render the documentation as HTML for the first time:
+### Submitting a patch
 
-```
-sphinx-build -M html docs/source/ docs/build/
-```
+You're welcome to [submit a pull request](https://github.com/jmanprz/pypipedrive/pulls) for a bug fix or a new feature as long as you use the library. All pull requests **must adhere** to the following guidelines:
 
-### Releasing a new release
+1. Public functions/methods have docstrings and type annotations.
+2. New functionality is accompanied by clear, descriptive unit tests.
+3. You can run `tox` successfully.
+4. You have your [commits signed](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification).
 
-```sh
-git tag 0.0.1 -m "Initial release"
-git push origin 0.0.1
-```
+Don't hesitate to [open a draft pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests#draft-pull-requests) when you're willing to discuss an idea you're working on but haven't yet finished all of the above. That's appreciated and part of the community sharing.

@@ -22,3 +22,9 @@ pip-wheel-metadata
 test.py
 *.json
 *.egg-info/
+scripts/
+
+check_models.py
+imageTest*
+sample-*
+README-OLD.md

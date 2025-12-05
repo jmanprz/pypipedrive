@@ -4,7 +4,7 @@ About
 
 Questions
 *********
-Post them over in the project's `Github Page <http://www.github.com/gildastone/pypipedrive>`_
+Post them over in the project's `Github Page <http://www.github.com/jmanprz/pypipedrive>`_
 
 _______________________________________________
 
@@ -15,7 +15,7 @@ Everyone who has an idea or suggestion is welcome to contribute! As maintainers,
 
 .. code-block:: python
 
-   git clone git@github.com:gildastone/pypipedrive.git
+   git clone git@github.com:jmanprz/pypipedrive.git
    cd pypipedrive
    # Create Virtual Environment
    python3 -m venv .venv
@@ -40,10 +40,10 @@ If it's your first time working on this library, clone the repo, set up pre-comm
 Reporting a bug
 ***************
 
-We encourage anyone to `submit an issue <https://github.com/gildastone/pypipedrive/issues/new>`_ to let us know about bugs, as long as you've followed these steps:
+We encourage anyone to `submit an issue <https://github.com/jmanprz/pypipedrive/issues/new>`_ to let us know about bugs, as long as you've followed these steps:
 
 1. Confirm you're on the latest version of the library and you can run the test suite locally.
-2. Check `open issues <https://github.com/gildastone/pypipedrive/issues>`_ to see if someone else has already reported it.
+2. Check `open issues <https://github.com/jmanprz/pypipedrive/issues>`_ to see if someone else has already reported it.
 3. Provide as much context as possible, i.e. expected vs. actual behavior, steps to reproduce, and runtime environment.
 4. If possible, reproduce the problem in a small example that you can share in the issue summary.
 
@@ -52,7 +52,7 @@ We ask that you *never* report security vulnerabilities to the GitHub issue trac
 Submitting a patch
 ******************
 
-Anyone who uses this library is welcome to `submit a pull request <https://github.com/gildastone/pypipedrive/pulls>`_ for a bug fix or a new feature. We do ask that all pull requests adhere to the following guidelines:
+Anyone who uses this library is welcome to `submit a pull request <https://github.com/jmanprz/pypipedrive/pulls>`_ for a bug fix or a new feature. We do ask that all pull requests adhere to the following guidelines:
 
 1. Public functions/methods have docstrings and type annotations.
 2. New functionality is accompanied by clear, descriptive unit tests.

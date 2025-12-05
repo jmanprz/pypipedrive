@@ -1,12 +1,13 @@
 import abc
+import numbers
 import pydantic
 import logging
-from datetime import datetime, date, time, timedelta
-from typing_extensions import Self as SelfType
-from typing_extensions import TypeAlias
+import datetime
+from typing_extensions import Self, TypeAlias
 from typing import (
     Any,
     Callable,
+    Dict,
     cast,
     ClassVar,
     Generic,
@@ -25,10 +26,16 @@ from .types import (
     LabelValuePrimaryDict,
     AddressDict,
     MonetaryDict,
+    CustomFieldsProductDict,
+    PriceDict,
     ParticipantDict,
     AttendeeDict,
     ItemSearchDict,
+    ItemSearchDealDict,
+    ItemSearchPersonDict,
     IdLabelDict,
+    SubfieldDict,
+    CodeDict,
 )
 from pypipedrive import utils
 
@@ -37,6 +44,7 @@ logger.setLevel(logging.WARNING)
 
 _ClassInfo: TypeAlias = Union[type, Tuple["_ClassInfo", ...]]
 T          = TypeVar("T")
+T_Model    = TypeVar("T_Model")    # type used to represent Model subclasses
 T_ORM      = TypeVar("T_ORM")      # type used to represent values internally
 T_API      = TypeVar("T_API")      # type used to exchange values w/ Pipedrive API
 T_ORM_List = TypeVar("T_ORM_List") # type used for lists of internal values
@@ -52,7 +60,7 @@ class Field(Generic[T_API, T_ORM, T_Missing], metaclass=abc.ABCMeta):
     missing_value: ClassVar[Any] = None
 
     # Contains a reference to the Model class (if possible)
-    _model: Optional[Type["Model"]] = None
+    _model: Optional[Type[T_Model]] = None
 
     # The name of the attribute on the Model class (if possible)
     _attribute_name: Optional[str] = None
@@ -61,11 +69,7 @@ class Field(Generic[T_API, T_ORM, T_Missing], metaclass=abc.ABCMeta):
         self,
         field_name: str,
         validate_type: bool = True,
-        validate: Union[
-            None,
-            Callable[[Any], Any],
-            Iterable[Callable[[Any], Any]]
-        ] = None,
+        validate: Union[None, Callable[[Any], Any], Iterable[Callable[[Any], Any]]] = None,
         readonly: Optional[bool] = False) -> None:
         """
         Args:
@@ -123,8 +127,9 @@ class Field(Generic[T_API, T_ORM, T_Missing], metaclass=abc.ABCMeta):
         ]
 
     def __get__(
-        self, instance: Optional["Model"], owner: Type[Any]
-    ) -> Union[SelfType, T_ORM, T_Missing]:
+        self,
+        instance: Optional[T_Model],
+        owner: Type[Any]) -> Union[Self, T_ORM, T_Missing]:
         # allow calling Model.field to get the field object instead of a value
         if not instance:
             return self
@@ -137,19 +142,35 @@ class Field(Generic[T_API, T_ORM, T_Missing], metaclass=abc.ABCMeta):
             return cast(T_Missing, self.missing_value)
         return cast(T_ORM, value)
 
-    def __set__(self, instance: "Model", value: Optional[T_ORM]) -> None:
-        # self._raise_if_readonly()
-        # Validte field type
-        if self.validate_type and value is not None:
-            self.valid_or_raise(value)
-        # Validate field value
+    def __set__(self, instance: T_Model, value: Optional[T_ORM]) -> None:
+        # Ensure assignment is allowed for readonly fields. Note: callers that
+        # populate instance._fields directly (e.g. Model.from_record) bypass
+        # this check intentionally.
+        self._raise_if_readonly(is_init=instance._init)
+
+        # Type validation: only run if the instance attribute `validate_type` (bool) is True
+        if getattr(self, "validate_type", True) and value is not None:
+            # Prefer a class-level `validate_type(self, value)` method on subclasses
+            # because instance attribute `self.validate_type` is a boolean and would
+            # shadow a method of the same name.
+            class_validator = getattr(type(self), "validate_type", None)
+            if callable(class_validator):  # Call the subclass validator (bound)
+                class_validator(self, value)
+            else:  # Fallback to the generic valid_types check
+                self.valid_or_raise(value) if self.validate_type else None
+        
+        # Field-specific validators (callable or iterable of callables)
         if self.validate is not None:
             if isinstance(self.validate, Iterable):
                 for validator in self.validate:
                     value = validator(value)
             else:
                 value = self.validate(value)
-        instance._fields[self._attribute_name] = value
+        
+        # Assign the validated value to the instance's fields dictionary
+        instance._fields[self._attribute_name] = self.to_internal_value(value)
+
+        # Mark the field as changed if the model tracks changes
         if hasattr(instance, "_changed"):
             instance._changed[self.field_name] = True
 
@@ -159,12 +180,16 @@ class Field(Generic[T_API, T_ORM, T_Missing], metaclass=abc.ABCMeta):
         """
         if self.valid_types and not isinstance(value, self.valid_types):
             raise TypeError(
-                f"{self.__class__.__name__} value must be {self.valid_types}; got {type(value)}"
+                f"{self.__class__.__name__} {self.field_name} value must be "
+                f"{self.valid_types}; got {type(value)} (value: {value})."
             )
 
-    def _raise_if_readonly(self) -> None:
-        if self.readonly:
-            raise AttributeError(f"{self._description} is read-only")
+    def _raise_if_readonly(self, is_init: bool = False) -> None:
+        if self.readonly and not is_init:
+            raise AttributeError(
+                f"{self._description} {self.__class__.__name__} "
+                f"{self.field_name} is read-only (is init: {is_init})."
+            )
 
     def to_internal_value(self, value: Any) -> Any:
         """
@@ -179,20 +204,43 @@ class Field(Generic[T_API, T_ORM, T_Missing], metaclass=abc.ABCMeta):
         return value
 
 
-#: A generic Field with internal and API representations that are the same type.
-_BasicField: TypeAlias = Field[T, T, None]
-
-
 class TextField(Field):
     
     missing_value = None
     valid_types = str
 
 
+class BytesField(Field):
+    
+    missing_value = None
+    valid_types = bytes
+
+
 class NumberField(Field):
 
     missing_value = None
     valid_types   = (int, float)
+
+    def validate_type(self, value):
+        """
+        Accept numeric values but reject booleans.
+        """
+        if value is None:
+            return
+
+        # Explicitly reject bool (bool subclasses int)
+        if isinstance(value, bool):
+            raise TypeError(
+                f"{self.__class__.__name__} {self.field_name} expects a "
+                f"boolean; got {type(value)!r} (value: {value})."
+            )
+
+        # Accept real numeric types (int, float, Decimal, etc.)
+        if not isinstance(value, numbers.Real):
+            raise TypeError(
+                f"{self.__class__.__name__} {self.field_name} expects a "
+                f"numbers.Real value; got {type(value)!r} (value: {value})."
+            )
 
 
 class FloatField(Field):
@@ -206,6 +254,25 @@ class IntegerField(Field):
     missing_value = None
     valid_types = int
 
+    def validate_type(self, value):
+        if value in [None, ""]:
+            return
+
+        # bool subclasses int, explicitly reject it
+        if isinstance(value, bool):
+            raise TypeError(
+                f"{self.__class__.__name__} {self.field_name} expects a boolean "
+                f"value; got {type(value)!r} (value: {value})."
+            )
+
+        # accept int-like integrals (e.g. numpy.int64)
+        if not isinstance(value, numbers.Integral):
+            if not(isinstance(value, str) and value.isdigit()):
+                raise TypeError(
+                    f"{self.__class__.__name__} {self.field_name} expects a "
+                    f"numbers.Integral; got {type(value)!r} (value: {value})."
+            )
+
 
 class BooleanField(Field):
 
@@ -213,68 +280,140 @@ class BooleanField(Field):
     valid_types = bool
 
 
-class DatetimeField(Field[str, datetime, None]):
+class DatetimeField(Field[str, datetime.datetime, None]):
     """
     DateTime field. Accepts only `datetime <https://docs.python.org/3/library/datetime.html#datetime-objects>`_ values.
     """
 
     missing_value = None
-    valid_types   = datetime
+    valid_types   = datetime.datetime
 
-    def to_record_value(self, value: datetime) -> str:
+    def to_record_value(self, value: Optional[datetime.datetime]) -> Optional[str]:
         """
         Convert a ``datetime`` into an ISO 8601 string, e.g. "2014-09-05T12:34:56.000Z".
         """
+        if value in [None, ""]:
+            return self.missing_value
         try:
             return utils.datetime_to_iso_str(value)
         except Exception as exc:
             logger.warning(f"field {self.field_name}: {exc}")
             return self.missing_value
 
-    def to_internal_value(self, value: str) -> datetime:
+    def to_internal_value(self, value: Optional[str]) -> Optional[datetime.datetime]:
         """
         Convert an ISO 8601 string, e.g. "2014-09-05T07:00:00.000Z" into a ``datetime``.
         """
-        try:
-            return utils.datetime_from_iso_str(value)
-        except Exception as exc:
-            logger.warning(f"field {self.field_name}: {exc}")
+        if value in [None, ""]:
             return self.missing_value
+        elif isinstance(value, datetime.datetime):
+            return value
+        else:
+            try:
+                return utils.datetime_from_iso_str(value)
+            except Exception as exc:
+                if self.validate_type:
+                    raise ValueError(
+                        f"Invalid datetime string for field {self.field_name}: "
+                        f"{value}"
+                    ) from exc
+                logger.warning(f"field {self.field_name}: {exc}")
+                return self.missing_value
+
+    def valid_or_raise(self, value: Any) -> None:
+        """
+        Validate the type of the given value and raise TypeError if invalid.
+        """
+        if self.valid_types:
+            try:
+                self.to_internal_value(value)
+            except Exception:
+                raise TypeError(
+                    f"{self.__class__.__name__} {self.field_name} value must "
+                    f"be {self.valid_types}; got {type(value)} which could "
+                    f"not be converted (value: {value})."
+                )
 
 
-class DateField(Field[str, date, None]):
+class DateField(Field[str, datetime.date, None]):
     """
     Date field. Accepts only `date <https://docs.python.org/3/library/datetime.html#date-objects>`_ values.
     """
 
     missing_value = None
-    valid_types   = date
+    valid_types   = datetime.date
 
-    def to_record_value(self, value: date) -> str:
+    def validate_type(self, value):
+        """
+        Ensure only datetime.date (but not datetime.datetime) values are accepted.
+        """
+        if value is None:
+            return
+
+        # Reject datetime.datetime explicitly (it's a subclass of date)
+        if isinstance(value, datetime.datetime):
+            raise TypeError(
+                f"{self.__class__.__name__} {self.field_name} expects a datetime.date "
+                "(not datetime.datetime). Use DateTimeField for timestamps; "
+                f"got {type(value)!r} (value: {value})."
+            )
+
+        if not isinstance(value, datetime.date):
+            raise TypeError(
+                f"{self.__class__.__name__} {self.field_name} expects datetime.date; "
+                f"got {type(value)!r} (value: {value})."
+            )
+
+    def to_record_value(self, value: Optional[datetime.date]) -> Optional[str]:
         """
         Convert a ``date`` into an ISO 8601 string, e.g. "2014-09-05".
         """
+        if value in [None, ""]:
+            return self.missing_value
         try:
             return utils.date_to_iso_str(value)
         except Exception as exc:
             logger.warning(f"field {self.field_name}: {exc}")
             return self.missing_value
 
-    def to_internal_value(self, value: str) -> date:
+    def to_internal_value(self, value: Optional[str]) -> Optional[datetime.date]:
         """
         Convert an ISO 8601 string, e.g. "2014-09-05" into a ``date``.
         """
-        try:
-            return utils.date_from_iso_str(value)
-        except Exception as exc:
-            logger.warning(f"field {self.field_name}: {exc}")
-            return None
+        if value in [None, ""]:
+            return self.missing_value
+        elif isinstance(value, datetime.date):
+            return value
+        else:
+            try:
+                return utils.date_from_iso_str(value)
+            except Exception as exc:
+                if self.validate_type:
+                    raise ValueError(
+                        f"Invalid datetime string for field {self.field_name}: "
+                        f"{value}"
+                    ) from exc
+                logger.warning(f"field {self.field_name}: {exc}")
+                return self.missing_value
 
+    def valid_or_raise(self, value: Any) -> None:
+        """
+        Validate the type of the given value and raise TypeError if invalid.
+        """
+        if self.valid_types:
+            try:
+                self.to_internal_value(value)
+            except Exception:
+                raise TypeError(
+                    f"{self.__class__.__name__} {self.field_name} value must "
+                    f"be {self.valid_types}; got {type(value)} which could not "
+                    f"be converted (value: {value})."
+                )
 
-class TimeField(Field[str, time, None]):
+class TimeField(Field[str, datetime.time, None]):
 
     missing_value = None
-    valid_types   = time
+    valid_types   = datetime.time
 
     def to_record_value(self, value):
         try:
@@ -291,17 +430,17 @@ class TimeField(Field[str, time, None]):
             return self.missing_value
 
 
-class DurationField(Field[int, timedelta, None]):
+class DurationField(Field[int, datetime.timedelta, None]):
     """
     Duration field. Accepts only `timedelta <https://docs.python.org/3/library/datetime.html#timedelta-objects>`_ values.
     """
 
     missing_value = None
-    valid_types   = timedelta
+    valid_types   = datetime.timedelta
 
-    def to_record_value(self, value: timedelta) -> float:
+    def to_record_value(self, value: datetime.timedelta) -> float:
         """
-        Convert a ``timedelta`` into a number of seconds.
+        Convert a ``datetime.timedelta`` into a number of seconds.
         """
         try:
             return utils.duration_to_hh_ss_str(value)
@@ -309,9 +448,9 @@ class DurationField(Field[int, timedelta, None]):
             logger.warning(f"field {self.field_name}: {exc}")
             return self.missing_value
 
-    def to_internal_value(self, value: Union[int, float]) -> timedelta:
+    def to_internal_value(self, value: Union[int, float]) -> datetime.timedelta:
         """
-        Convert a number of seconds into a ``timedelta``.
+        Convert a number of seconds into a ``datetime.timedelta``.
         """
         try:
             return utils.duration_from_hh_ss_str(value)
@@ -319,38 +458,50 @@ class DurationField(Field[int, timedelta, None]):
             logger.warning(f"field {self.field_name}: {exc}")
             return self.missing_value
 
+# === Dict fields ===
 
-class _DictField(Generic[T], _BasicField[T]):
+class _DictField(Generic[T], Field[Dict, Dict, Dict]):
     """
-    Generic field type that stores a single dict.
-    should be subclassed by concrete field types (below).
+    Generic field type that stores a single dict. Should be subclassed by 
+    concrete field types.
     """
 
     missing_value = {}
     valid_types   = dict
+    contains_type: Type[T] = dict
 
     def valid_or_raise(self, value: Any) -> None:
         """
         Validate the type of the given value and raise TypeError if invalid.
         """
-        if self.contains_type and not isinstance(value, self.contains_type):
+        if self.contains_type is None:
             raise TypeError(
-                f"{self.__class__.__name__} value must be {self.contains_type}; got {type(value)}"
+                f"{self.__class__.__name__}.contains_type {self.field_name} "
+                f"must be set (value: {value})."
+            )
+        elif isinstance(value, dict):
+            assert_typed_dict(self.contains_type, value)
+        elif not isinstance(value, self.contains_type):
+            raise TypeError(
+                f"{self.__class__.__name__} {self.field_name} value must "
+                f"be {self.contains_type}; got {type(value)} (value: {value})."
             )
 
     def to_internal_value(self, value: Optional[T_ORM]) -> T_ORM:
         if value is None:
             return {}
         else:
-            return assert_typed_dict(self.contains_type, value)
+            if isinstance(value, dict):
+                return assert_typed_dict(self.contains_type, value)
+            return value
 
     def to_record_value(self, value: T_ORM) -> T_API:
         if value:
             record_value = value.model_dump()
             for field,v in record_value.items():
-                if isinstance(v, datetime):
+                if isinstance(v, datetime.datetime):
                     record_value[field] = utils.datetime_to_iso_str(v)
-                elif isinstance(v, date):
+                elif isinstance(v, datetime.date):
                     record_value[field] = utils.date_to_iso_str(v)
             return record_value
         return {}
@@ -382,6 +533,15 @@ class MonetaryField(_DictField[MonetaryDict]):
     contains_type = MonetaryDict
 
 
+class CustomFieldsProductField(_DictField[CustomFieldsProductDict]):
+    """
+    Accepts a `dict` with schema `CustomFieldsProductDict`.
+    """
+
+    contains_type = CustomFieldsProductDict
+
+# === List fields ===
+
 class _ListField(
     Generic[T_API, T_ORM, T_ORM_List],
     Field[List[T_API], List[T_ORM], T_ORM_List]
@@ -403,19 +563,19 @@ class _ListField(
     # have to overload the type annotations for __get__
 
     @overload
-    def __get__(self, instance: None, owner: Type[Any]) -> SelfType: ...
+    def __get__(self, instance: None, owner: Type[Any]) -> Self: ...
 
     @overload
-    def __get__(self, instance: "Model", owner: Type[Any]) -> List[T_ORM]: ...
+    def __get__(self, instance: T_Model, owner: Type[Any]) -> List[T_ORM]: ...
 
     def __get__(
-        self, instance: Optional["Model"], owner: Type[Any]
-    ) -> Union[SelfType, List[T_ORM]]:
+        self, instance: Optional[T_Model], owner: Type[Any]
+    ) -> Union[Self, List[T_ORM]]:
         if not instance:
             return self
         return self._get_list_value(instance)
 
-    def _get_list_value(self, instance: "Model") -> List[T_ORM]:
+    def _get_list_value(self, instance: T_Model) -> List[T_ORM]:
         value = cast(List[T_ORM], instance._fields.get(self._attribute_name))
         # If returns no value, substitute an empty list.
         if value is None:
@@ -431,11 +591,21 @@ class _ListField(
         if value is None:
             value = []
         internal_values = []
+        if not isinstance(value, list):
+            raise TypeError(
+                f"{self.__class__.__name__} {self.field_name} expected list; "
+                f"got {type(value)} (value: {value})."
+            )
         for obj in value:
             if isinstance(obj, dict):
                 internal_values.append(assert_typed_dict(self.contains_type, obj))
-            else:
+            elif isinstance(obj, self.contains_type):
                 internal_values.append(assert_typed_obj(self.contains_type, obj))
+            else:
+                raise TypeError(
+                    f"{self.__class__.__name__} {self.field_name} expected "
+                    f"{self.contains_type} or dict; got {type(obj)} (value: {obj})."
+                )
         return internal_values
 
     def to_record_value(self, value: List[T_ORM]) -> List[T_API]:
@@ -444,9 +614,9 @@ class _ListField(
             if isinstance(obj, pydantic.BaseModel):
                 record_value = obj.model_dump()
                 for field,v in record_value.items():
-                    if isinstance(v, datetime):
+                    if isinstance(v, datetime.datetime):
                         record_value[field] = utils.datetime_to_iso_str(v)
-                    elif isinstance(v, date):
+                    elif isinstance(v, datetime.date):
                         record_value[field] = utils.date_to_iso_str(v)
                 record_values.append(record_value)
             else:
@@ -455,13 +625,19 @@ class _ListField(
 
 
 class _ValidatingListField(Generic[T], _ListField[T, T, T]):
+
     contains_type: Type[T]
 
     def valid_or_raise(self, value: Any) -> None:
         super().valid_or_raise(value)
         for obj in value:
-            if not isinstance(obj, self.contains_type):
-                raise TypeError(f"expected {self.contains_type}; got {type(obj)}")
+            if isinstance(obj, dict):
+                assert_typed_dict(self.contains_type, obj)
+            elif not isinstance(obj, self.contains_type):
+                raise TypeError(
+                    f"{self.__class__.__name__} {self.field_name} expected "
+                    f"{self.contains_type}; got {type(obj)} (value: {obj})."
+                )
 
 
 class PhonesField(_ValidatingListField[LabelValuePrimaryDict]):
@@ -512,12 +688,28 @@ class AttendeeField(_ValidatingListField[AttendeeDict]):
     contains_type = AttendeeDict
 
 
-class ItemSearchField(_ValidatingListField[ItemSearchDict]):
+class ItemsField(_ValidatingListField[ItemSearchDict]):
     """
-    Accepts a list of dicts in the format of ItemSearch.
+    Accepts a list of dicts in the format of ItemSearchDict (Model.ItemSearch).
     """
 
     contains_type = ItemSearchDict
+
+
+class ItemSearchDealField(_ValidatingListField[ItemSearchDealDict]):
+    """
+    Accepts a list of dicts in the format of ItemSearchDealDict.
+    """
+
+    contains_type = ItemSearchDealDict
+
+
+class ItemSearchPersonField(_ValidatingListField[ItemSearchPersonDict]):
+    """
+    Accepts a list of dicts in the format of ItemSearchPersonDict.
+    """
+
+    contains_type = ItemSearchPersonDict
 
 
 class OptionsField(_ValidatingListField[IdLabelDict]):
@@ -526,3 +718,35 @@ class OptionsField(_ValidatingListField[IdLabelDict]):
     """
 
     contains_type = IdLabelDict
+
+
+class SubfieldField(_ValidatingListField[SubfieldDict]):
+    """
+    Accepts a list of dicts in the format of SubfieldDict.
+    """
+
+    contains_type = SubfieldDict
+
+
+class DataField(_ValidatingListField[CodeDict]):
+    """
+    Accepts a list of dicts in the format of CodeDict.
+    """
+
+    contains_type = CodeDict
+
+
+class PricesField(_ValidatingListField[PriceDict]):
+    """
+    Accepts a list of dicts in the format of PriceDict.
+    """
+
+    contains_type = PriceDict
+
+
+class CustomFieldsField(_ValidatingListField[str]):
+    """
+    Accepts a list of dicts in the format of CodeDict.
+    """
+
+    contains_type = str

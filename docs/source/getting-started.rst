@@ -8,7 +8,7 @@ Getting Started
 Installation
 ------------
 
-Add the `pyPipedrive <https://pypi.org/project/pypipedrive>`_ library to your project just as you would any other:
+Add the `pypipedrive <https://pypi.org/project/pypipedrive>`_ library to your project just as you would any other:
 
 .. code-block:: shell
 
