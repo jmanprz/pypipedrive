@@ -10,7 +10,6 @@ sphinx:
   configuration: docs/source/conf.py
 
 python:
-  version: 3.12
   install:
     - requirements: requirements-dev.txt
     - method: pip
