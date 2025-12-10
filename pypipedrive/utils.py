@@ -42,7 +42,7 @@ def date_to_iso_str(value: Optional[Union[date, datetime]]) -> Optional[str]:
     return value.strftime("%Y-%m-%d")
 
 
-def date_from_iso_str(value: Optional[str]) -> Optional[date]:
+def date_from_iso_str(value: Optional[Union[str, date]]) -> Optional[date]:
     """
     Convert ISO 8601 date string into a ``date`` object.
 
@@ -51,7 +51,9 @@ def date_from_iso_str(value: Optional[str]) -> Optional[date]:
     """
     if value in [None, ""]:
         return None
-    return datetime.strptime(value, "%Y-%m-%d").date()
+    elif isinstance(value, date):
+        return value
+    return date.fromisoformat(value)
 
 
 def time_to_iso_str(value: Optional[time]) -> Optional[str]:

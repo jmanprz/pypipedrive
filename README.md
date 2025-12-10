@@ -15,7 +15,7 @@ Python client for the Pipedrive V1/V2 API. Don't worry about which endpoint vers
 ## Installation
 
 ```sh
-% pip install pypipedrive
+% pip install pypipedrive-client
 ```
 
 ## Documentation
@@ -33,7 +33,7 @@ If it's your first time working on this library, clone the repo and make sure fi
 Below command runs the test suite, code coverage and `/docs` build.
 
 ```sh
-% tox
+% make test
 ```
 
 ### Reporting a bug
@@ -51,7 +51,11 @@ For security vulnerabilities, share them _directly_ to the maintainers via email
 
 ### Submitting a patch
 
-You're welcome to [submit a pull request](https://github.com/jmanprz/pypipedrive/pulls) for a bug fix or a new feature as long as you use the library. All pull requests **must adhere** to the following guidelines:
+You're welcome to [submit a pull request](https://github.com/jmanprz/pypipedrive/pulls) for a bug fix or a new feature as long as you use the library.
+
+Work off of `develop` to create the patch branch and open pull requests targeting `develop`.
+
+All pull requests **must adhere** to the following guidelines:
 
 1. Public functions/methods have docstrings and type annotations.
 2. New functionality is accompanied by clear, descriptive unit tests.
@@ -59,3 +63,9 @@ You're welcome to [submit a pull request](https://github.com/jmanprz/pypipedrive
 4. You have your [commits signed](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification).
 
 Don't hesitate to [open a draft pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests#draft-pull-requests) when you're willing to discuss an idea you're working on but haven't yet finished all of the above. That's appreciated and part of the community sharing.
+
+### License
+
+This project is licensed under the [MIT License](https://opensource.org/license/MIT).
+
+Built by Juan Manuel M. Pérez from [® Magical Potion](https://magicalpotion.io?utm_source=pypipedrive&utm_medium=github&utm_campaign=open_source) for teams that need to enhance and customise their Pipedrive sales experience.

@@ -17,30 +17,36 @@ class DealFields(Model):
     monetary, daterange and timerange fields - each of these fields will have 
     one additional data field in addition to the one presented in the context 
     of deal fields. For example, if there is a monetary field with the key 
-    `ffk9s9` stored on the account, `ffk9s9` would hold the numeric value of 
-    the field, and `ffk9s9_currency` would hold the ISO currency code that goes 
+    ``ffk9s9`` stored on the account, ``ffk9s9`` would hold the numeric value of 
+    the field, and ``ffk9s9_currency`` would hold the ISO currency code that goes 
     along with the numeric value. To find out which data fields are available, 
     fetch one deal and list its keys.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/DealFields
+    See `DealFields API reference <https://developers.pipedrive.com/docs/api/v1/DealFields>`_.
 
     Returns data about all deal fields.
-    GET[Cost:20] v1/dealFields
+
+      * GET[Cost:20] ``v1/dealFields``
 
     Returns data about a specific deal field.
-    GET[Cost:2] v1/dealFields/{id}
 
-    Adds a new deal field. See: https://pipedrive.readme.io/docs/adding-a-new-custom-field
-    POST[Cost:10] v1/dealFields
+      * GET[Cost:2] ``v1/dealFields/{id}``
 
-    Updates a deal field. See: https://pipedrive.readme.io/docs/updating-custom-field-value
-    PUT[Cost:10] v1/dealFields/{id}
+    Adds a new deal field. See: `adding a new custom field <https://pipedrive.readme.io/docs/adding-a-new-custom-field>`_.
+
+      * POST[Cost:10] ``v1/dealFields``
+
+    Updates a deal field. See: `updating custom field value <https://pipedrive.readme.io/docs/updating-custom-field-value>`_.
+
+      * PUT[Cost:10] ``v1/dealFields/{id}``
 
     Marks multiple deal fields as deleted.
-    DELETE[Cost:10] v1/dealFields
 
-    Marks a field as deleted. See: https://pipedrive.readme.io/docs/deleting-a-custom-field
-    DELETE[Cost:6] v1/dealFields/{id}
+      * DELETE[Cost:10] ``v1/dealFields``
+
+    Marks a field as deleted. See: `deleting a custom field <https://pipedrive.readme.io/docs/deleting-a-custom-field>`_.
+
+      * DELETE[Cost:6] ``v1/dealFields/{id}``
     """
 
     id                      = F.IntegerField("id")
@@ -87,9 +93,12 @@ class DealFields(Model):
     @classmethod
     def all(cls, params: Dict = {}) -> List[Self]:
         """
-        Returns data about all deal fields. Allowed query parameters:
-            - start: Pagination start. Default: 0.
-            - limit: Items shown per page.
+        Returns data about all deal fields.
+
+        Allowed query parameters:
+
+            - ``start`` (int): Pagination start. Default: 0.
+            - ``limit`` (int): Items shown per page.
 
         Args:
             params: Query parameters for filtering and pagination.
@@ -102,39 +111,46 @@ class DealFields(Model):
     def save(self, force: bool = False) -> SaveResult:
         """
         Adds a new deal field. For more information, see the tutorial for 
-        adding a new custom field:
-        https://pipedrive.readme.io/docs/adding-a-new-custom-field
+        `adding a new custom field <https://pipedrive.readme.io/docs/adding-a-new-custom-field>`_.
 
-        The values for `DealFields.field_type` are:
-        `address`: Address field
-        `date`: Date (format YYYY-MM-DD)
-        `daterange`: Date-range field (has a start/end date values YYYY-MM-DD)
-        `double`: Numeric value
-        `enum`: Options field with a single possible chosen option
-        `monetary`: Monetary field (has a numeric value and a currency value)
-        `org`: Org field (contains an org ID which is stored on the same account)
-        `people`: Person field (contains a person ID which is stored on the same account)
-        `phone`: Phone field (up to 255 numbers and/or characters)
-        `set`: Options field with a possibility of having multiple chosen options
-        `text`: Long text (up to 65k characters)
-        `time`: Time field (format HH:MM:SS)
-        `timerange`: Time-range field (has a start/end time values HH:MM:SS)
-        `user`: User field (contains a user ID of another Pipedrive user)
-        `varchar`: Text (up to 255 characters)
-        `varchar_auto`: Autocomplete text (up to 255 characters)
-        `visible_to`: System field that keeps item's visibility setting
+        The values for ``DealFields.field_type`` are:
+
+            - ``address``: Address field
+            - ``date``: Date (format YYYY-MM-DD)
+            - ``daterange``: Date-range field (has a start/end date values 
+              YYYY-MM-DD)
+            - ``double``: Numeric value
+            - ``enum``: Options field with a single possible chosen option
+            - ``monetary``: Monetary field (has a numeric value and a currency 
+              value)
+            - ``org``: Org field (contains an org ID which is stored on the 
+              same account)
+            - ``people``: Person field (contains a person ID which is stored 
+              on the same account)
+            - ``phone``: Phone field (up to 255 numbers and/or characters)
+            - ``set``: Options field with a possibility of having multiple 
+              chosen options
+            - ``text``: Long text (up to 65k characters)
+            - ``time``: Time field (format HH:MM:SS)
+            - ``timerange``: Time-range field (has a start/end time values 
+              HH:MM:SS)
+            - ``user``: User field (contains a user ID of another Pipedrive user)
+            - ``varchar``: Text (up to 255 characters)
+            - ``varchar_auto``: Autocomplete text (up to 255 characters)
+            - ``visible_to``: System field that keeps item's visibility setting
 
         To update a deal field, the allowed updatable fields are (they are
         set at the instance level):
-            name: The name of the field.
-            options: When field_type is either set or enum, possible options 
-                     must be supplied as a JSON-encoded sequential array of 
-                     objects. All active items must be supplied and already 
-                     existing items must have their ID supplied. New items only 
-                     require a label. Example: 
-                     [{"id":123,"label":"Existing Item"},{"label":"New Item"}]
-            add_visible_flag: Whether the field is available in 'add new' modal 
-                              or not (both in web and mobile app). Default: True.
+
+            - ``name``: The name of the field.
+            - ``options``: When field_type is either set or enum, possible options 
+              must be supplied as a JSON-encoded sequential array of 
+              objects. All active items must be supplied and already 
+              existing items must have their ID supplied. New items only 
+              require a ``label``. Example: 
+              ``[{"id":123,"label":"Existing Item"},{"label":"New Item"}]``.
+            - ``add_visible_flag``: Whether the field is available in 'add new' 
+              modal or not (both in web and mobile app). Default: True.
 
         Args:
             force: Whether to force the save operation.
@@ -147,8 +163,7 @@ class DealFields(Model):
     def delete(self, *args, **kwargs) -> bool:
         """
         Marks a field as deleted. For more information, see the tutorial for 
-        deleting a custom field: 
-        https://pipedrive.readme.io/docs/deleting-a-custom-field
+        `deleting a custom field: <https://pipedrive.readme.io/docs/deleting-a-custom-field>`_.
         """
         return super().delete(*args, **kwargs)
 

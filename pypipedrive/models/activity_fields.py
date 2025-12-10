@@ -10,10 +10,11 @@ class ActivityFields(Model):
     """
     Activity fields represent different fields that an activity has.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/ActivityFields
+    See `ActivityFields API reference <https://developers.pipedrive.com/docs/api/v1/ActivityFields>`_.
 
     Returns all activity fields.
-    GET[Cost:20] v1/activityFields
+
+      * GET[Cost:20] ``v1/activityFields``
     """
 
     id                      = F.IntegerField("id")

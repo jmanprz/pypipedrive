@@ -1,18 +1,20 @@
+.. raw:: html
+
+   <img class="logo-index" src="_static/logo.svg" alt="pypipedrive" class="logo-large"/>
+
 pypipedrive
 ===========
 
 .. container:: .large
 
-   Python Client for the `Pipedrive API V2 <https://docs.pipedrive.com/docs/api>`_
+   Python SDK for the `Pipedrive CRM V1/V2 API <https://developers.pipedrive.com/docs/api/v1>`_
 
 .. container:: .buttons
 
    `Docs <getting-started.html>`_
    `GitHub <https://github.com/jmanprz/pypipedrive>`_
 
-
    Version: |version|
-
 
 .. toctree::
    :caption: Docs
@@ -21,15 +23,13 @@ pypipedrive
 
    getting-started
    models
-   api
+   api-reference
 
 .. toctree::
    :caption: More
    :hidden:
 
-   about
-   migrations
+   contributing
+   migration
    changelog
-   GitHub <https://github.com/jmanprz/pypipedrive>
-   PyPI <https://pypi.org/project/pypipedrive/>
-   Pipedrive API <https://docs.pipedrive.com/docs/api>
+   links

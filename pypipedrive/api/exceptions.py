@@ -33,7 +33,13 @@ class ApiException(Exception):
         self.success = error_response.get("success")
         self.error = error_response.get("error")
         if self.version == V1:
-            self.error_info = error_response.get("error_info")
+            if error_response.get("service") is not None:
+                self.error_info = (
+                    f"{error_response.get('service')} "
+                    f"{error_response.get('statusText')}"
+                )
+            else:
+                self.error_info = error_response.get("error_info")
             self.data = error_response.get("data")
             self.additional_data = error_response.get("additional_data")
         super().__init__(self.message())
@@ -42,8 +48,11 @@ class ApiException(Exception):
         parts = [str(self.code)]
         if self.error:
             parts.append(self.error)
-        if self.version == V1 and self.error_info:
-            parts.append(f"(info: {self.error_info})")
+        if self.version == V1:
+            if self.error_info:
+                parts.append(f"info: {self.error_info}")
+            if self.data:
+                parts.append(f"data: {self.data}")
         return " ".join(parts)
 
 

@@ -58,25 +58,25 @@ html_static_path = ["_static"]
 
 # html_theme_options = {}
 html_theme_options = {
-    "color_scheme": "",
-    "canonical_url": "",
-    "analytics_id": "UA-XXXXXXX-1",
-    "style_external_links": False,
-    "collapse_navigation": True,
-    "sticky_navigation": True,
-    "navigation_depth": 4,
-    "includehidden": True,
-    "titles_only": False,
+    # "color_scheme": "",
+    # "canonical_url": "",
+    # "analytics_id": "UA-XXXXXXX-1",
+    # "style_external_links": False,
+    # "collapse_navigation": True,
+    # "sticky_navigation": True,
+    # "navigation_depth": 4,
+    # "includehidden": True,
+    # "titles_only": False,
     "github_url": "https://github.com/jmanprz/pypipedrive",
-    "logo_mobile": "_static/logo-text.svg"
+    "logo_mobile": "logo-text.svg"
 }
 
-html_logo = "_static/logo-text.svg"
+html_logo = "_static/logo.svg"
 
 html_context = {
     "landing_page": {
         "menu": [
-            # {"title": "Pipedrive Api Docs", "url": "https://developers.pipedrive.com/docs/api"},
+            {"title": "Pipedrive API Reference", "url": "https://developers.pipedrive.com/docs/api/v1"},
             # {"title": "♡ Sponsor", "url": "https://github.com/sponsors/jmanprz"},
         ]
     },
@@ -99,5 +99,8 @@ html_sidebars = {}
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ["_static"]
-# html_css_files = ["custom.css"]
-# html_js_files = []
+html_css_files = ["custom.css"]
+html_js_files = [
+    "https://www.googletagmanager.com/gtag/js?id=G-8Q5M4DJNCK",
+    "gtag.js"
+]

@@ -28,3 +28,5 @@ check_models.py
 imageTest*
 sample-*
 README-OLD.md
+DEPLOYMENT.md
+.pypirc

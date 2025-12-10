@@ -14,33 +14,39 @@ class ProductFields(Model):
     Such is the case with monetary, daterange and timerange fields - each of 
     these fields will have one additional data field in addition to the one 
     presented in the context of product fields. For example, if there is a 
-    monetary field with the key ffk9s9 stored on the account, ffk9s9 would hold 
-    the numeric value of the field, and ffk9s9_currency would hold the ISO 
-    currency code that goes along with the numeric value. To find out which 
-    data fields are available, fetch one product and list its keys.
+    monetary field with the key ``ffk9s9`` stored on the account, ``ffk9s9`` 
+    would hold the numeric value of the field, and ``ffk9s9_currency`` would 
+    hold the ISO currency code that goes along with the numeric value. To find 
+    out which data fields are available, fetch one product and list its keys.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/ProductFields
+    See `ProductFields API reference <https://developers.pipedrive.com/docs/api/v1/ProductFields>`_.
 
     Get all product fields.
-    GET[Cost:10] v1/productFields
-    GET[Cost:20] v2/productFields
+
+      * GET[Cost:10] ``v1/productFields``
+      * GET[Cost:20] ``v2/productFields``
 
     Get one product field.
-    GET[Cost:2] v1/productFields/{id}
-    GET[Cost:1] v2/productFields/{field_code}
+
+      * GET[Cost:2] ``v1/productFields/{id}``
+      * GET[Cost:1] ``v2/productFields/{field_code}``
 
     Add a new product field.
-    POST[Cost:10] v1/productFields
-    POST[Cost:5]  v2/productFields
+
+      * POST[Cost:10] ``v1/productFields``
+      * POST[Cost:5]  ``v2/productFields``
 
     Update a product field
-    PUT[Cost:10] v1/productFields/{id}
+
+      * PUT[Cost:10] ``v1/productFields/{id}``
 
     Delete multiple product fields in bulk
-    DELETE[Cost:10] v1/productFields
+
+      * DELETE[Cost:10] ``v1/productFields``
 
     Delete a product field
-    DELETE[Cost:6] v1/productFields/{id}
+
+      * DELETE[Cost:6] ``v1/productFields/{id}``
     """
 
     id                      = F.IntegerField("id", readonly=True)

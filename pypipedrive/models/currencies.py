@@ -9,10 +9,10 @@ from pypipedrive.orm import fields as F
 class Currencies(Model):
     """
     Supported currencies which can be used to represent the monetary value of 
-    a deal, or a value of any monetary type custom field. The `Currency.code`
-    field must be used to point to a currency. `Currency.code` is the ISO-4217 
+    a deal, or a value of any monetary type custom field. The ``Currency.code``
+    field must be used to point to a currency. ``Currency.code`` is the ISO-4217 
     format currency code for non-custom currencies. You can differentiate 
-    custom and non-custom currencies using the `is_custom_flag` property. For 
+    custom and non-custom currencies using the ``is_custom_flag`` property. For 
     custom currencies, it is intended that the formatted sums are displayed 
     in the UI using the following format: 
     [sum][non-breaking space character][currency.symbol], 
@@ -20,12 +20,11 @@ class Currencies(Model):
     the API yet — rather the admin users of the account must configure them 
     from the Pipedrive app.
 
-    Pipedrive API reference:
-        https://developers.pipedrive.com/docs/api/v1/Currencies
-        https://pipedrive.readme.io/docs/messaging-app-extension
+    See `Currencies API reference <https://developers.pipedrive.com/docs/api/v1/Currencies>`_.
     
     Returns all supported currencies in given account.
-    GET[Cost:20] v1/currencies
+
+      * GET[Cost:20] ``v1/currencies``
     """
 
     id             = F.IntegerField("id")
@@ -55,8 +54,8 @@ class Currencies(Model):
         all non-custom currencies.
 
         Args:
-            term (str): Optional search term that is searched for from 
-                        currency's name and/or code
+            term: Optional search term that is searched for from currency's 
+            name and/or code
         Returns:
             List of Currency objects
         """

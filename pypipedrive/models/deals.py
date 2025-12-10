@@ -19,165 +19,212 @@ class Deals(Model):
     Deals can be owned by a user, and followed by one or many users. Each deal 
     consists of standard data fields but can also contain a number of custom 
     fields. The custom fields can be recognized by long hashes as keys. These 
-    hashes can be mapped against `DealField.key`. The corresponding label for 
-    each such custom field can be obtained from `DealField.name`.
+    hashes can be mapped against ``DealField.key``. The corresponding label for 
+    each such custom field can be obtained from ``DealField.name``.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/Deals
+    See `Deals API reference <https://developers.pipedrive.com/docs/api/v1/Deals>`_.
 
     Returns data about all not archived deals.
-    GET[Cost:20] v1/deals DEPRECATED
-    GET[Cost:20] v2/deals
+
+      * GET[Cost:20] ``v1/deals`` **DEPRECATED**
+      * GET[Cost:20] ``v2/deals``
 
     Returns data about all archived deals.
-    GET[Cost:40] v1/deals/archived DEPRECATED
-    GET[Cost:20] v2/deals/archived
+
+      * GET[Cost:40] ``v1/deals/archived`` **DEPRECATED**
+      * GET[Cost:20] ``v2/deals/archived``
 
     Returns all deals collection.
-    GET[Cost:10] v1/deals DEPRECATED
+
+      * GET[Cost:10] ``v1/deals`` **DEPRECATED**
 
     Searches all deals by title, notes and/or custom fields.
-    GET[Cost:40] v1/deals/search DEPRECATED
-    GET[Cost:20] v2/deals/search
+
+      * GET[Cost:40] ``v1/deals/search`` **DEPRECATED**
+      * GET[Cost:20] ``v2/deals/search``
 
     Returns a summary of all not archived deals.
-    GET[Cost:40] v1/deals/summary
+
+      * GET[Cost:40] ``v1/deals/summary``
 
     Returns a summary of all not archived deals.
-    GET[Cost:80] v1/deals/summary/archived DEPRECATED
+
+      * GET[Cost:80] ``v1/deals/summary/archived`` **DEPRECATED**
 
     Get deals timeline
-    GET[Cost:20] v1/deals/timeline
+
+      * GET[Cost:20] ``v1/deals/timeline``
 
     Get archived deals timeline
-    GET[Cost:20] v1/deals/timeline/archived DEPRECATED
+
+      * GET[Cost:20] ``v1/deals/timeline/archived`` **DEPRECATED**
 
     Returns the details of a specific deal.
-    GET[Cost:2] v1/deals/{id} DEPRECATED
-    GET[Cost:1] v2/deals/{id}
+
+      * GET[Cost:2] ``v1/deals/{id}`` **DEPRECATED**
+      * GET[Cost:1] ``v2/deals/{id}``
 
     List activities associated with a deal.
-    GET[Cost:20] v1/deals/{id}/activities DEPRECATED
+
+      * GET[Cost:20] ``v1/deals/{id}/activities`` **DEPRECATED**
 
     Lists updates about field values of an deal.
-    GET[Cost:20] v1/deals/{id}/changelog
+
+      * GET[Cost:20] ``v1/deals/{id}/changelog``
 
     Lists files associated with a deal.
-    GET[Cost:20] v1/deals/{id}/files
+
+      * GET[Cost:20] ``v1/deals/{id}/files``
 
     List updates about a deal.
-    GET[Cost:40] v1/deals/{id}/flow
+
+      * GET[Cost:40] ``v1/deals/{id}/flow``
 
     List updates about participants of a deal.
-    GET[Cost:10] v1/deals/{id}/participantsChangelog
+
+      * GET[Cost:10] ``v1/deals/{id}/participantsChangelog``
 
     List followers of a deal.
-    GET[Cost:20] v1/deals/{id}/followers DEPRECATED
-    GET[Cost:10] v2/deals/{id}/followers
+
+      * GET[Cost:20] ``v1/deals/{id}/followers`` **DEPRECATED**
+      * GET[Cost:10] ``v2/deals/{id}/followers``
 
     List mail messages associated with a deal.
-    GET[Cost:20] v1/deals/{id}/mailMessages
+
+      * GET[Cost:20] ``v1/deals/{id}/mailMessages``
 
     List participants of a deal.
-    GET[Cost:10] v1/deals/{id}/participants
+
+      * GET[Cost:10] ``v1/deals/{id}/participants``
 
     List permitted users.
-    GET[Cost:10] v1/deals/{id}/permittedUsers
+
+      * GET[Cost:10] ``v1/deals/{id}/permittedUsers``
 
     List all persons associated with a deal.
-    GET[Cost:20] v1/deals/{id}/persons DEPRECATED
+
+      * GET[Cost:20] ``v1/deals/{id}/persons`` **DEPRECATED**
 
     List products attached to a deal.
-    GET[Cost:20] v1/deals/{id}/products DEPRECATED
-    GET[Cost:10] v2/deals/{id}/products
+
+      * GET[Cost:20] ``v1/deals/{id}/products`` **DEPRECATED**
+      * GET[Cost:10] ``v2/deals/{id}/products``
 
     List followers changelog of a deal.
-    GET[Cost:10] v2/deals/{id}/followers/changelog
+
+      * GET[Cost:10] ``v2/deals/{id}/followers/changelog``
 
     Get deal products of several deals.
-    GET[Cost:20] v2/deals/products
+
+      * GET[Cost:20] ``v2/deals/products``
 
     List discounts added to a deal.
-    GET[Cost:10] v2/deals/{id}/discounts
+
+      * GET[Cost:10] ``v2/deals/{id}/discounts``
 
     List installments added to a list of deals (BETA).
-    GET[Cost:10] v2/deals/installments
+
+      * GET[Cost:10] ``v2/deals/installments``
 
     Get Deal conversion status (BETA)
-    GET[Cost:10] v2/deals/{id}/convert/status/{conversion_id}
+
+      * GET[Cost:10] ``v2/deals/{id}/convert/status/{conversion_id}``
 
     Add a deal.
-    POST[Cost:10] v1/deals DEPRECATED
-    POST[Cost:5] v2/deals
+
+      * POST[Cost:10] ``v1/deals`` **DEPRECATED**
+      * POST[Cost:5] ``v2/deals``
 
     Duplicate deal.
-    POST[Cost:10] v1/deals/{id}/duplicate
+
+      * POST[Cost:10] ``v1/deals/{id}/duplicate``
 
     Add a follower to a deal.
-    POST[Cost:10] v1/deals/{id}/followers DEPRECATED
-    POST[Cost:5]  v2/deals/{id}/followers
+
+      * POST[Cost:10] ``v1/deals/{id}/followers`` **DEPRECATED**
+      * POST[Cost:5]  ``v2/deals/{id}/followers``
 
     Add a participant to a deal.
-    POST[Cost:5] v1/deals/{id}/participants
+
+      * POST[Cost:5] ``v1/deals/{id}/participants``
 
     Add a product to a deal.
-    POST[Cost:10] v1/deals/{id}/products
-    POST[Cost:5]  v2/deals/{id}/products
+
+      * POST[Cost:10] ``v1/deals/{id}/products`` **DEPRECATED**
+      * POST[Cost:5]  ``v2/deals/{id}/products``
 
     Add multiple products to a deal.
-    POST[Cost:25] v2/deals/{id}/products/bulk
+
+      * POST[Cost:25] ``v2/deals/{id}/products/bulk``
 
     Add a discount to a deal.
-    POST[Cost:5] v2/deals/{id}/discounts
+
+      * POST[Cost:5] ``v2/deals/{id}/discounts``
 
     Add an installment to a deal.
-    POST[Cost:5] v2/deals/{id}/installments
+
+      * POST[Cost:5] ``v2/deals/{id}/installments``
 
     Convert a deal to a lead (BETA).
-    GET[Cost:40] v2/deals/{id}/convert/lead
+
+      * GET[Cost:40] ``v2/deals/{id}/convert/lead``
 
     Update a deal.
-    PUT[Cost:10]  v1/deals/{id} DEPRECATED
-    PATCH[Cost:5] v2/deals/{id}
+
+      * PUT[Cost:10] ``v1/deals/{id}`` **DEPRECATED**
+      * PATCH[Cost:5] ``v2/deals/{id}``
 
     Merge two deals.
-    PUT[Cost:40] v1/deals/{id}/merge (merge_with_id in body)
+
+      * PUT[Cost:40] ``v1/deals/{id}/merge`` (merge_with_id in body)
 
     Update the product attached to a deal.
-    PUT[Cost:10]  v1/deals/{id}/products/{product_attachment_id} DEPRECATED
-    PATCH[Cost:5] v2/deals/{id}/products/{product_attachment_id}
+
+      * PUT[Cost:10]  ``v1/deals/{id}/products/{product_attachment_id}`` **DEPRECATED**
+      * PATCH[Cost:5] ``v2/deals/{id}/products/{product_attachment_id}``
 
     Update a discount added to a deal.
-    PATCH[Cost:5] v2/deals/{id}/discounts/{discount_id}
+
+      * PATCH[Cost:5] ``v2/deals/{id}/discounts/{discount_id}``
 
     Update an installment added to a deal.
-    PATCH[Cost:5] v2/deals/{id}/installments/{installment_id}
+
+      * PATCH[Cost:5] ``v2/deals/{id}/installments/{installment_id}``
 
     Delete multiple deals in bulk
-    DELETE[Cost:10] v1/deals DEPRECATED
+
+      * DELETE[Cost:10] ``v1/deals`` **DEPRECATED**
 
     Delete a deal.
-    DELETE[Cost:6] v1/deals/{id} DEPRECATED
-    DELETE[Cost:3] v2/deals/{id}
+
+      * DELETE[Cost:6] ``v1/deals/{id}`` **DEPRECATED**
+      * DELETE[Cost:3] ``v2/deals/{id}``
 
     Delete a follower from a deal.
-    DELETE[Cost:6] v1/deals/{id}/followers/{follower_id} DEPRECATED
-    DELETE[Cost:3] v2/deals/{id}/followers/{follower_id}
+
+      * DELETE[Cost:6] ``v1/deals/{id}/followers/{follower_id}`` **DEPRECATED**
+      * DELETE[Cost:3] ``v2/deals/{id}/followers/{follower_id}``
 
     Delete a participant from a deal.
-    DELETE[Cost:3] v1/deals/{id}/participants/{participant_id}
+
+      * DELETE[Cost:3] ``v1/deals/{id}/participants/{participant_id}``
 
     Delete many products from a deal.
-    DELETE[Cost:25] v2/deals/{id}/products
+
+      * DELETE[Cost:25] ``v2/deals/{id}/products``
 
     Delete an attached product from a deal
-    DELETE[Cost:5] v1/deals/{id}/products/{product_attachment_id}
-    DELETE[Cost:3] v2/deals/{id}/products/{product_attachment_id}
+
+      * DELETE[Cost:5] ``v1/deals/{id}/products/{product_attachment_id}`` **DEPRECATED**
+      * DELETE[Cost:3] ``v2/deals/{id}/products/{product_attachment_id}``
 
     Delete a discount from a deal
-    DELETE[Cost:3] v2/deals/{id}/discounts/{discount_id}
+
+      * DELETE[Cost:3] ``v2/deals/{id}/discounts/{discount_id}``
 
     Delete an installment from a deal
-    DELETE[Cost:3] v2/deals/{id}/installments/{installment_id}
+
+      * DELETE[Cost:3] ``v2/deals/{id}/installments/{installment_id}``
     """
 
     id                  = F.IntegerField("id", readonly=True)
@@ -230,7 +277,7 @@ class Deals(Model):
     @classmethod
     def fields(cls) -> List[DealFields]:
         """
-        V1 endpoint that returns the list of field names for the Deals model.
+        Returns the list of field names for the Deals model.
         """
         return DealFields.all()
 
@@ -256,8 +303,8 @@ class Deals(Model):
 
         Args:
             term: The search term to look for. Minimum 2 characters
-                  (or 1 if using exact_match). Please note that the search 
-                  term has to be URL encoded.
+            (or 1 if using ``exact_match``). Please note that the search term 
+            has to be URL encoded.
             params: Query params passed to the API (copied internally).
         Returns:
             List of ItemSearch objects.
@@ -268,14 +315,22 @@ class Deals(Model):
     @classmethod
     def summary(cls, params: Dict = {}) -> Dict:
         """
-        V1 endpoint. Returns a summary of all not archived deals.
+        Returns a summary of all not archived deals.
+
         Allowed query params:
-            - status (str): Filter by deal status. Possible values: "open", "won", "lost".
-            - currency (str): Filter by currency code (e.g. "USD", "EUR").
-            - filter_id (int): Filter by predefined filter ID.
-            - user_id (int): Filter by owner user ID.
-            - pipeline_id (int): Filter by pipeline ID.
-            - stage_id (int): Filter by stage ID.
+
+            - ``status`` (str): Filter by deal status. Possible values: "open", 
+              "won", "lost".
+            - ``currency`` (str): Filter by currency code (e.g. "USD", "EUR").
+            - ``filter_id`` (int): Filter by predefined filter ID.
+            - ``user_id`` (int): Filter by owner user ID.
+            - ``pipeline_id`` (int): Filter by pipeline ID.
+            - ``stage_id`` (int): Filter by stage ID.
+
+        Args:
+            params: Query params passed to the API (copied internally).
+        Returns:
+            Dictionary containing summary data.
         """
         uri = f"{cls._get_meta('entity_name')}/summary"
         return cls.get_api(version=V1).get(uri=uri, params=params).to_dict()
@@ -290,20 +345,19 @@ class Deals(Model):
         field_key: str,
         params: Dict = {}) -> Dict:
         """
-        V1 endpoint. Returns not archived open and won deals, grouped by a 
-        defined interval of time set in a date-type dealField (`field_key`) 
-        — e.g. when month is the chosen interval, and 3 months are asked 
-        starting from January 1st, 2012, deals are returned grouped into 
-        3 groups — January, February and March — based on the value of the 
-        given `field_key`.
+        Returns not archived open and won deals, grouped by a defined interval 
+        of time set in a date-type dealField (`field_key`) — e.g. when month 
+        is the chosen interval, and 3 months are asked starting from January 
+        1st, 2012, deals are returned grouped into 3 groups — January, February 
+        and March — based on the value of the given ``field_key``.
 
         NB: Api also returns custom fields (uuid). Returning as dict for now
         because of the complexity of the data structure.
 
         Args:
             start_date: The start date for the timeline (YYYY-MM-DD).
-            interval: The interval for grouping. Possible values:
-                      "day", "week", "month", "quarter".
+            interval: The interval for grouping. Possible values: "day", 
+            "week", "month", "quarter".
             amount: The number of intervals to return.
             field_key: The deal field key to group by (must be date-type).
             params: Query params passed to the API (copied internally).
@@ -330,12 +384,16 @@ class Deals(Model):
     @warn_endpoint_legacy
     def changelog(self, params: Dict = {}) -> List[Dict]:
         """
-        V1 endpoint. Lists updates about field values of an deal. This is a 
+        Lists updates about field values of an deal. This is a 
         cursor-paginated endpoint. For more information, please refer to our 
-        documentation on pagination. Allowed query params:
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - cursor (str): For pagination, the marker (an opaque string value) 
-                            representing the first item on the next page
+        documentation on pagination.
+
+        Allowed query params:
+
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -349,10 +407,13 @@ class Deals(Model):
     @warn_endpoint_legacy
     def files(self, params: Dict = {}) -> List[Files]:
         """
-        V1 endpoint. Lists files associated with a deal. Allowed query params:
-            - start (int): Pagination start. Default: 0.
-            - limit (int): Amount of results to return. Max: 100.
-            - sort (str): Sort order. Possible values: "id", "update_time".
+        Lists files associated with a deal.
+
+        Allowed query params:
+
+            - ``start`` (int): Pagination start. Default: 0.
+            - ``limit`` (int): Amount of results to return. Max: 100.
+            - ``sort`` (str): Sort order. Possible values: "id", "update_time".
         
         Args:
             params: Query params passed to the API (copied internally).
@@ -366,20 +427,23 @@ class Deals(Model):
     @warn_endpoint_legacy
     def flow(self, params: Dict = {}) -> Dict:
         """
-        V1 endpoint. Lists updates about a deal. Allowed query params:
-            - start (int): Pagination start. Default: 0.
-            - limit (int): Amount of results to return. Default: 100. Max:
-            - all_changes (str): Whether to show custom field updates or not. 
-                                 1 = Include custom field changes. If omitted 
-                                 returns changes without custom field updates.
-            -items (str): A comma-separated string for filtering out item 
-                          specific updates. Possible values: call, activity, 
-                          plannedActivity, change, note, deal, file, dealChange, 
-                          personChange, organizationChange, follower, dealFollower, 
-                          personFollower, organizationFollower, participant, 
-                          comment, mailMessage, mailMessageWithAttachment, 
-                          invoice, document, marketing_campaign_stat, 
-                          marketing_status_change.
+        Lists updates about a deal.
+
+        Allowed query params:
+
+            - ``start`` (int): Pagination start. Default: 0.
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``all_changes`` (str): Whether to show custom field updates or 
+              not. 1 = Include custom field changes. If omitted returns changes 
+              without custom field updates.
+            - ``items`` (str): A comma-separated string for filtering out item 
+              specific updates. Possible values: call, activity, plannedActivity, 
+              change, note, deal, file, dealChange, personChange, 
+              organizationChange, follower, dealFollower, personFollower, 
+              organizationFollower, participant, comment, mailMessage, 
+              mailMessageWithAttachment, invoice, document, 
+              marketing_campaign_stat, marketing_status_change.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -392,12 +456,16 @@ class Deals(Model):
     @warn_endpoint_legacy
     def participants_changelog(self, params: Dict = {}) -> Dict:
         """
-        V1 endpoint. List updates about participants of a deal. This is a 
-        cursor-paginated endpoint. For more information, please refer to our 
-        documentation on pagination. Allowed query params:
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - cursor (str): For pagination, the marker (an opaque string value) 
-                            representing the first item on the next page
+        List updates about participants of a deal. This is a cursor-paginated 
+        endpoint. For more information, please refer to our documentation on 
+        pagination.
+
+        Allowed query params:
+
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -409,10 +477,14 @@ class Deals(Model):
 
     def followers(self, params: Dict = {}) -> List[Dict]:
         """
-        List followers of a deal. Allowed query params:
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - cursor (str): For pagination, the marker (an opaque string value) 
-                            representing the first item on the next page
+        List followers of a deal.
+
+        Allowed query params:
+
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -425,9 +497,12 @@ class Deals(Model):
     @warn_endpoint_legacy
     def mail_messages(self, params: Dict = {}) -> List[Dict]:
         """
-        V1 endpoint. List mail messages associated with a deal. Allowed query params:
-            - start (int): Pagination start. Default: 0.
-            - limit (int): Items shown per page.
+        List mail messages associated with a deal.
+
+        Allowed query params:
+
+            - ``start`` (int): Pagination start. Default: 0.
+            - ``limit`` (int): Items shown per page.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -440,11 +515,14 @@ class Deals(Model):
     @warn_endpoint_legacy
     def participants(self, params: Dict = {}) -> List[Dict]:
         """
-        V1 endpoint. Lists the participants associated with a deal. If a company 
-        uses the Campaigns product, then this endpoint will also return the 
-        `data.marketing_status` field. Allowed query params:
-            - start (int): Pagination start. Default: 0.
-            - limit (int): Items shown per page.
+        Lists the participants associated with a deal. If a company uses the 
+        Campaigns product, then this endpoint will also return the 
+        ``data.marketing_status`` field.
+
+        Allowed query params:
+
+            - ``start`` (int): Pagination start. Default: 0.
+            - ``limit`` (int): Items shown per page.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -457,7 +535,7 @@ class Deals(Model):
     @warn_endpoint_legacy
     def permitted_users(self) -> List[Dict]:
         """
-        V1 endpoint. Lists the users permitted to access a deal.
+        Lists the users permitted to access a deal.
 
         Returns:
             List of permitted users data.
@@ -467,13 +545,17 @@ class Deals(Model):
 
     def products(self, params: Dict = {}) -> List[Products]:
         """
-        List products attached to a deal. Allowed query params:
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - cursor (str): For pagination, the marker (an opaque string value) 
-                            representing the first item on the next page.
-            - sort_by (str): Field to sort by. Default "id".
-                             Values: "id", "add_time", "update_time", "order_nr".
-            - sort_direction (str): Sort direction. Default "asc".
+        List products attached to a deal.
+
+        Allowed query params:
+
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
+            - ``sort_by`` (str): Field to sort by. Default "id". Values: 
+              "id", "add_time", "update_time", "order_nr".
+            - ``sort_direction`` (str): Sort direction. Default "asc".
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -486,10 +568,14 @@ class Deals(Model):
 
     def followers_changelog(self, params: Dict = {}) -> Dict:
         """
-        Lists changelogs about users have followed the deal. Allowed query params:
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - cursor (str): For pagination, the marker (an opaque string value) 
-                            representing the first item on the next page
+        Lists changelogs about users have followed the deal.
+
+        Allowed query params:
+
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -505,17 +591,21 @@ class Deals(Model):
         deal_ids: List[int] = None,
         params: Dict = {}) -> List[Products]:
         """
-        Returns data about products attached to deals. Allowed query params:
-            - deal_ids (array): An array of integers with the IDs of the deals 
-                                for which the attached products will be returned. 
-                                A maximum of 100 deal IDs can be provided.
-            - cursor (str): For pagination, the marker (an opaque string value)
-                            representing the first item on the next page.
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - sort_by (str): The field to sort by. Supported fields: "id" (default), 
-                             "deal_id", "add_time", "update_time", "order_nr".
-            - sort_direction (str): The sort direction. Possible values: "asc" 
-                                    (default), "desc".
+        Returns data about products attached to deals.
+
+        Allowed query params:
+
+            - ``deal_ids`` (array): An array of integers with the IDs of the 
+              deals for which the attached products will be returned. A maximum 
+              of 100 deal IDs can be provided.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``sort_by`` (str): The field to sort by. Supported fields: 
+              "id" (default), "deal_id", "add_time", "update_time", "order_nr".
+            - ``sort_direction`` (str): The sort direction. Possible values: 
+              "asc" (default), "desc".
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -547,17 +637,21 @@ class Deals(Model):
     def installments(cls, deal_ids: List[int] = None, params: Dict = {}) -> Dict:
         """
         [BETA] Lists installments attached to a deal. Only available in Growth 
-        and above plans. Allowed query params:
-            - deal_ids (array): An array of integers with the IDs of the deals 
-                                for which the attached products will be returned. 
-                                A maximum of 100 deal IDs can be provided.
-            - cursor (str): For pagination, the marker (an opaque string value)
-                            representing the first item on the next page.
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - sort_by (str): The field to sort by. Supported fields: "id" (default), 
-                             "billing_date", "deal_id".
-            - sort_direction (str): The sort direction. Possible values: "asc" 
-                                    (default), "desc".
+        and above plans.
+
+        Allowed query params:
+
+            - ``deal_ids`` (array): An array of integers with the IDs of the 
+              deals for which the attached products will be returned. A maximum 
+              of 100 deal IDs can be provided.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``sort_by`` (str): The field to sort by. Supported fields: 
+              "id" (default), "billing_date", "deal_id".
+            - ``sort_direction`` (str): The sort direction. Possible values: 
+              "asc" (default), "desc".
 
         Args:
             deal_ids: List of deal IDs to filter installments.
@@ -594,7 +688,7 @@ class Deals(Model):
     @warn_endpoint_legacy
     def duplicate(self) -> Self:
         """
-        V1 endpoint. Duplicate a deal.
+        Duplicate a deal.
 
         Returns:
             The newly created Deal instance.
@@ -620,7 +714,7 @@ class Deals(Model):
     @warn_endpoint_legacy
     def add_participant(self, person_id: int = None) -> Dict:
         """
-        V1 endpoint. Adds a participant to a deal.
+        Adds a participant to a deal.
 
         Args:
             person_id: The ID of the person/participant to add to the deal.
@@ -640,61 +734,52 @@ class Deals(Model):
         quantity: Union[int, float] = None,
         params: Dict = {}) -> Dict:
         """
-        Add a product to a deal. Allowed query params:
-            - product_id (int): The ID of the product.
-            - item_price (number): The price value of the product.
-            - quantity (number): The quantity of the product.
-            - tax (number): The product tax.
-            - comments (str): The comments of the product.
-            - discount (number): The value of the discount. The `discount_type` 
-                                 field can be used to specify whether the value 
-                                 is an amount or a percentage. Default: 0.
-            - is_enabled (bool): Whether this product is enabled for the deal.
-                                 Not possible to disable the product if the deal 
-                                 has installments associated and the product is 
-                                 the last one enabled. Not possible to enable the 
-                                 product if the deal has installments associated 
-                                 and the product is recurring. Deafult: true.
-            - tax_method (str): The tax option to be applied to the products. 
-                                When using inclusive, the tax percentage will 
-                                already be included in the price. When using 
-                                exclusive, the tax will not be included in the 
-                                price. When using none, no tax will be added. 
-                                Use the tax field for defining the tax percentage 
-                                amount. By default, the user setting value for 
-                                tax options will be used. Changing this in one 
-                                product affects the rest of the products attached 
-                                to the deal.
-            - discount_type (str): The value of the discount. The `discount_type` 
-                                   field can be used to specify whether the 
-                                   value is an amount or a percentage.
-                                   Values: `percentage` (default), `amount`.
-            - product_variation_id (int): The ID of the product variation.
-            - billing_frequency (str): Only available in Growth and above plans.
-                                       How often a customer is billed for access 
-                                       to a service or product. To set 
-                                       `billing_frequency` different than one-time, 
-                                       the deal must not have installments 
-                                       associated. A deal can have up to 20 
-                                       products attached with `billing_frequency` 
-                                       different than one-time.
-            - billing_frequency_cycles (int): Only available in Growth and above 
-                                              plans. The number of times the 
-                                              billing frequency repeats for a 
-                                              product in a deal. When 
-                                              `billing_frequency` is set to 
-                                              one-time, this field must be `null`.
-                                              When `billing_frequency` is set 
-                                              to weekly, this field cannot be 
-                                              `null`. For all the other values 
-                                              of `billing_frequency`, `null` 
-                                              represents a product billed 
-                                              indefinitely. Must be a positive 
-                                              integer less or equal to 208.
-            - billing_start_date (str): Only available in Growth and above plans.
-                                        The billing start date. Must be between 
-                                        10 years in the past and 10 years in the 
-                                        future. Format: YYYY-MM-DD.
+        Add a product to a deal.
+
+        Allowed query params:
+
+            - ``product_id`` (int): The ID of the product.
+            - ``item_price`` (number): The price value of the product.
+            - ``quantity`` (number): The quantity of the product.
+            - ``tax`` (number): The product tax.
+            - ``comments`` (str): The comments of the product.
+            - ``discount`` (number): The value of the discount. The 
+              ``discount_type`` field can be used to specify whether the value 
+              is an amount or a percentage. Default: 0.
+            - ``is_enabled`` (bool): Whether this product is enabled for the 
+              deal. Not possible to disable the product if the deal has 
+              installments associated and the product is the last one enabled. 
+              Not possible to enable the product if the deal has installments 
+              associated and the product is recurring. Default: true.
+            - ``tax_method`` (str): The tax option to be applied to the 
+              products. When using inclusive, the tax percentage will already 
+              be included in the price. When using exclusive, the tax will not 
+              be included in the price. When using none, no tax will be added. 
+              Use the tax field for defining the tax percentage amount. By 
+              default, the user setting value for tax options will be used. 
+              Changing this in one product affects the rest of the products 
+              attached to the deal.
+            - ``discount_type`` (str): The value of the discount. The 
+              ``discount_type`` field can be used to specify whether the 
+              value is an amount or a percentage. Values: `percentage` 
+              (default), `amount`.
+            - ``product_variation_id`` (int): The ID of the product variation.
+            - ``billing_frequency`` (str): Only available in Growth and above 
+              plans. How often a customer is billed for access to a service or 
+              product. To set ``billing_frequency`` different than one-time, 
+              the deal must not have installments associated. A deal can have 
+              up to 20 products attached with ``billing_frequency`` different 
+              than one-time.
+            - ``billing_frequency_cycles`` (int): Only available in Growth 
+              and above plans. The number of times the billing frequency repeats 
+              for a product in a deal. When ``billing_frequency`` is set to 
+              one-time, this field must be `null`. When ``billing_frequency`` 
+              is set to weekly, this field cannot be `null`. For all the other 
+              values of `billing_frequency`, `null` represents a product billed 
+              indefinitely. Must be a positive integer less or equal to 208.
+            - ``billing_start_date`` (str): Only available in Growth and above 
+              plans. The billing start date. Must be between 10 years in the 
+              past and 10 years in the future. Format: YYYY-MM-DD.
 
         Args:
             product_id: The ID of the product to add to the deal.
@@ -735,12 +820,12 @@ class Deals(Model):
         type: str = None) -> Dict:
         """
         Adds a discount to a deal.
-        
+
         Args:
             description: The description of the discount.
             amount: The discount amount. Must be a positive number (excl. 0).
             type: Determines whether the discount is applied as a `percentage` 
-                  or a fixed amount.
+            or a fixed amount.
         Returns:
             The API response data as a dictionary.
         """
@@ -765,7 +850,7 @@ class Deals(Model):
         billing_date: str = None) -> Dict:
         """
         Adds an installment to a deal.
-        
+
         An installment can only be added if the deal includes at least one 
         one-time product. If the deal contains at least one recurring product, 
         adding installments is not allowed.
@@ -776,7 +861,7 @@ class Deals(Model):
             description: The description of the discount.
             amount: The discount amount. Must be a positive number (excl. 0).
             billing_date: The date which the installment will be charged. 
-                          Must be in the format YYYY-MM-DD.
+            Must be in the format YYYY-MM-DD.
         Returns:
             The API response data as a dictionary.
         """
@@ -809,18 +894,18 @@ class Deals(Model):
         the deal is marked as deleted.
 
         To retrieve the created entity ID and the result of the conversion, use
-        `/api/v2/deals/{deal_id}/convert/status/{conversion_id}` endpoint.
+        ``/api/v2/deals/{deal_id}/convert/status/{conversion_id}`` endpoint.
 
         Returns:
             The API response data as a dictionary.
         """
         uri = f"{self._get_meta('entity_name')}/{self.id}/convert/lead"
-        return self.get_api(version=V2).post(uri=uri).to_dict()
+        return self.get_api(version=V2).post(uri=uri, json={}).to_dict()
 
     @warn_endpoint_legacy
     def merge(self, merge_with_id: int) -> Dict:
         """
-        V1 endpoint. Merges a deal with another deal.
+        Merges a deal with another deal.
 
         Args:
             merge_with_id: The ID of the deal to merge into this deal.
@@ -841,7 +926,7 @@ class Deals(Model):
 
         Args:
             product_attachment_id: The ID of the deal-product (the ID of the 
-                                   product attached to the deal).
+            product attached to the deal).
             params: Query params passed to the API (copied internally).
         Returns:
             The API response data as a dictionary.
@@ -917,8 +1002,8 @@ class Deals(Model):
 
         Args:
             ids: Comma-separated list of deal product IDs to delete. If not 
-                 provided, all deal products will be deleted up to 100 items. 
-                 Maximum 100 IDs allowed.
+            provided, all deal products will be deleted up to 100 items. 
+            Maximum 100 IDs allowed.
         Returns:
             The API response data as a dictionary.
         """
@@ -934,7 +1019,7 @@ class Deals(Model):
 
         Args:
             product_attachment_id: The ID of the deal-product (the ID of the 
-                                   product attached to the deal).
+            product attached to the deal).
         Returns:
             The API response data as a dictionary.
         """

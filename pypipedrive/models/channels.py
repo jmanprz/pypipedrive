@@ -14,21 +14,25 @@ class Channels(Model):
     integration OAuth scope together with Messaging manifest in building the 
     Messaging app extension.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/Channels
+    See `Channels API reference <https://developers.pipedrive.com/docs/api/v1/Channels>`_.
 
     Overall, this entity is fully deprecated and will be removed in future.
 
     Adds a new messaging channel, only admins are able to register new channels.
-    POST[Cost:10] v1/channels DEPRECATED
+
+      * POST[Cost:10] ``v1/channels`` **DEPRECATED**
 
     Receives an incoming message
-    POST[Cost:10] v1/channels/messages/receive DEPRECATED
+
+      * POST[Cost:10] ``v1/channels/messages/receive`` **DEPRECATED**
 
     Deletes an existing messenger's channel and all related entities.
-    DELETE[Cost:6] v1/channels/{id} DEPRECATED
+
+      * DELETE[Cost:6] ``v1/channels/{id}`` **DEPRECATED**
 
     Deletes an existing conversation.
-    DELETE[Cost:6] v1/channels/{channel-id}/conversations/{conversation-id} DEPRECATED
+
+      * DELETE[Cost:6] ``v1/channels/{channel-id}/conversations/{conversation-id}`` **DEPRECATED**
     """
 
     id                    = F.TextField("id", readonly=True)
@@ -70,7 +74,7 @@ class Channels(Model):
     @warn_endpoint_legacy
     def delete(self, *args, **kwargs):
         """
-        Deletes an existing messenger’s channel and all related entities 
+        Deletes an existing messenger's channel and all related entities 
         (conversations and messages). To use the endpoint, you need to have 
         Messengers integration OAuth scope enabled and the Messaging manifest 
         ready for the Messaging app extension.

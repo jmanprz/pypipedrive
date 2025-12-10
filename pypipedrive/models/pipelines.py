@@ -10,36 +10,44 @@ class Pipelines(Model):
     """
     Pipelines are essentially ordered collections of stages.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/Pipelines
+    See `Pipelines API reference <https://developers.pipedrive.com/docs/api/v1/Pipelines>`_.
 
     Get all pipelines.
-    GET[Cost:10] v1/pipelines DEPRECATED
-    GET[Cost:5]  v2/pipelines
+
+      * GET[Cost:10] ``v1/pipelines`` **DEPRECATED**
+      * GET[Cost:5]  ``v2/pipelines``
 
     Get one pipeline.
-    GET[Cost:2] v1/pipelines/{id} DEPRECATED
-    GET[Cost:1] v2/pipelines/{id}
+
+      * GET[Cost:2] ``v1/pipelines/{id}`` **DEPRECATED**
+      * GET[Cost:1] ``v2/pipelines/{id}``
 
     Get deals conversion rates in pipeline.
-    GET[Cost:40] v1/pipelines/{id}/conversion_statistics
+
+      * GET[Cost:40] ``v1/pipelines/{id}/conversion_statistics``
 
     Get deals in a pipeline.
-    GET[Cost:20] v1/pipelines/{id}/deals DEPRECATED
+
+      * GET[Cost:20] ``v1/pipelines/{id}/deals`` **DEPRECATED**
 
     Get deals movements in pipeline.
-    GET[Cost:40] v1/pipelines/{id}/movement_statistics
+
+      * GET[Cost:40] ``v1/pipelines/{id}/movement_statistics``
 
     Add a new pipeline.
-    POST[Cost:10] v1/pipelines DEPRECATED
-    POST[Cost:5]  v2/pipelines
-    
+
+      * POST[Cost:10] ``v1/pipelines`` **DEPRECATED**
+      * POST[Cost:5]  ``v2/pipelines``
+
     Update a pipeline.
-    PUT[Cost:10]  v1/pipelines/{id} DEPRECATED
-    PATCH[Cost:5] v2/pipelines/{id}
+
+      * PUT[Cost:10]  ``v1/pipelines/{id}`` **DEPRECATED**
+      * PATCH[Cost:5] ``v2/pipelines/{id}``
 
     Delete a pipeline.
-    DELETE[Cost:6] v1/pipelines/{id} DEPRECATED
-    DELETE[Cost:3] v2/pipelines/{id}
+
+      * DELETE[Cost:6] ``v1/pipelines/{id}`` **DEPRECATED**
+      * DELETE[Cost:3] ``v2/pipelines/{id}``
     """
 
     id                          = F.IntegerField("id", readonly=True)
@@ -71,8 +79,10 @@ class Pipelines(Model):
 
         Args:
             start_date: Start date in format YYYY-MM-DD.
-            end_date:   End date in format YYYY-MM-DD.
-            user_id:    Optional user ID to filter statistics.
+            end_date: End date in format YYYY-MM-DD.
+            user_id: Optional user ID to filter statistics.
+        Returns:
+            A dictionary with statistics.
         """
         assert stats_type in ["conversion", "movement"], \
             "`stats_type` must be 'conversion' or 'movement'"
@@ -100,8 +110,8 @@ class Pipelines(Model):
 
         Args:
             start_date: Start date in format YYYY-MM-DD.
-            end_date:   End date in format YYYY-MM-DD.
-            user_id:    Optional user ID to filter statistics.
+            end_date: End date in format YYYY-MM-DD.
+            user_id: Optional user ID to filter statistics.
         Returns:
             A dictionary with conversion statistics.
         """
@@ -117,8 +127,8 @@ class Pipelines(Model):
 
         Args:
             start_date: Start date in format YYYY-MM-DD.
-            end_date:   End date in format YYYY-MM-DD.
-            user_id:    Optional user ID to filter statistics.
+            end_date: End date in format YYYY-MM-DD.
+            user_id: Optional user ID to filter statistics.
         Returns:
             A dictionary with movement statistics.
         """

@@ -136,30 +136,6 @@ class Api:
                 version=self.version,
                 error_response=payload
             )
-        # try:
-        #     payload = response.json()
-        #     if response.ok:
-        #         return ApiResponse(**payload)
-        #     raise_from_error_response(
-        #         code           = response.status_code,
-        #         version        = self.version,
-        #         error_response = payload
-        #     )
-        # except requests.exceptions.JSONDecodeError as exc:  # Response not JSON
-        #     payload = {"data": {"content": response.content}}
-        #     if response.ok:
-        #         return ApiResponse(**payload)
-        #     raise_from_error_response(
-        #         code           = response.status_code,
-        #         version        = self.version,
-        #         error_response = payload
-        #     )
-        # except Exception as exc:
-        #     raise requests.exceptions.HTTPError(
-        #         f"API request failed. Status code: {response.status_code}. "
-        #         f"Reason: {response.reason}. Response content: {response.text}. "
-        #         f"Exception: {exc}"
-        #     )
 
     def request(
         self,

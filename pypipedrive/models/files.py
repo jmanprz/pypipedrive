@@ -16,32 +16,39 @@ class Files(Model):
     you retrieve a file's meta-info along with a URL which can be used to 
     download the file by using a standard HTTP GET request.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/Files
+    See `Files API reference <https://developers.pipedrive.com/docs/api/v1/Files>`_.
 
     Returns data about all files.
-    GET[Cost:20] v1/files
+
+      * GET[Cost:20] ``v1/files``
 
     Returns data about a specific file.
-    GET[Cost:2] v1/files/{id}
+
+      * GET[Cost:2] ``v1/files/{id}``
 
     Download one file.
-    GET[Cost:20] v1/files/{id}/download
-    See https://developers.pipedrive.com/tutorials/adding-files-via-pipedrive-api
 
-    Add file.
-    POST[Cost:10] v1/files
+      * GET[Cost:20] ``v1/files/{id}/download``
 
-    Create a remote file and link it to an item. (Google Drive access required)
-    POST[Cost:10] v1/files/remote
-    
-    Link a remote file to an item. (Google Drive access required)
-    POST[Cost:10] v1/files/remoteLink
+    Add file. See `adding files via Pipedrive API <https://developers.pipedrive.com/tutorials/adding-files-via-pipedrive-api>`_.
+
+      * POST[Cost:10] ``v1/files``
+
+    Create a remote file and link it to an item (Google Drive access required).
+
+      * POST[Cost:10] ``v1/files/remote``
+
+    Link a remote file to an item (Google Drive access required).
+
+      * POST[Cost:10] ``v1/files/remoteLink``
 
     Update file details
-    PUT[Cost:10] v1/files/{id}
+
+      * PUT[Cost:10] ``v1/files/{id}``
 
     Marks a file as deleted.
-    DELETE[Cost:6] v1/files/{id}
+
+      * DELETE[Cost:6] ``v1/files/{id}``
     """
 
     id              = F.IntegerField("id", readonly=True)
@@ -84,11 +91,14 @@ class Files(Model):
     @classmethod
     def all(cls, params: Dict = {}) -> List[Self]:
         """
-        Returns data about all files. Allowed query parameters:
-            - start (int): Pagination start. Default: 0.
-            - limit (int): Items shown per page. Please note that a maximum 
-                           value of 100 is allowed.
-            - sort (str): Supported fields: `id`, `update_time`.
+        Returns data about all files.
+
+        Allowed query parameters:
+
+            - ``start`` (int): Pagination start. Default: 0.
+            - ``limit`` (int): Items shown per page. Please note that a 
+              maximum value of 100 is allowed.
+            - ``sort`` (str): Supported fields: `id`, `update_time`.
 
         Args:
             params: Dict: Query parameters as a dictionary.
@@ -121,7 +131,7 @@ class Files(Model):
         """
         Lets you upload a file and associate it with a deal, person, organization, 
         activity, product or lead. For more information, see the tutorial for 
-        adding a file (https://pipedrive.readme.io/docs/adding-a-file).
+        `adding a file <https://pipedrive.readme.io/docs/adding-a-file>`_.
 
         Args:
             data: The binary content of the file to upload.
@@ -155,8 +165,8 @@ class Files(Model):
         file) and `description` (the description of the file) can be updated.
 
         NB: an update method is required (no usage of the Model.save) to modify 
-            an existing instance because of the application/x-www-form-urlencoded
-            required by the Pipedrive endpoint.
+        an existing instance because of the application/x-www-form-urlencoded
+        required by the Pipedrive endpoint.
 
         Returns:
             The SaveResult of the update operation.
@@ -184,7 +194,7 @@ class Files(Model):
     @classmethod
     def batch_delete(cls, *args, **kwargs):
         raise NotImplementedError("Files.batch_delete() is not allowed.")
-    
+
     @warn_endpoint_legacy
     @classmethod
     def remote_create(
@@ -197,21 +207,21 @@ class Files(Model):
         """
         Creates a new empty file in the remote location (`googledrive`) that will 
         be linked to the item you supply. For more information, see the tutorial 
-        for adding a remote file: https://pipedrive.readme.io/docs/adding-a-remote-file
+        for `adding a remote file <https://pipedrive.readme.io/docs/adding-a-remote-file>`_.
 
         NB: The user needs to have an activated Google Account in Pipedrive for 
-            the files to be added successfully.
-            See https://{company-name}.pipedrive.com/settings/files
+        the files to be added successfully.
+        See `https://{company-name}.pipedrive.com/settings/files <https://{company-name}.pipedrive.com/settings/files>`_.
 
         Args:
             file_type: The file type. Values `gdoc`, `gslides`, `gsheet`, 
-                       `gform`, `gdraw`.
+            `gform`, `gdraw`.
             title: The title of the file.
             item_type: The item type. Values: Values: `deal`, `organisation`,
-                    `person`.
+            `person`.
             item_id: The ID of the item to associate the file with.
-            remote_location: The location type to send the file to. 
-                             Only `googledrive` is supported at the moment.
+            remote_location: The location type to send the file to. Only 
+            `googledrive` is supported at the moment.
         Returns:
             The created and linked File object.
         """
@@ -247,19 +257,19 @@ class Files(Model):
         """
         Links an existing remote file (googledrive) to the item you supply. 
         For more information, see the tutorial for adding a remote file.
-        See: https://pipedrive.readme.io/docs/adding-a-remote-file.
+        See `adding a remote file <https://pipedrive.readme.io/docs/adding-a-remote-file>`_.
 
         NB: The user needs to have an activated Google Account in Pipedrive for 
-            the files to be added successfully.
-            See https://{company-name}.pipedrive.com/settings/files
+        the files to be added successfully.
+        See `https://{company-name}.pipedrive.com/settings/files <https://{company-name}.pipedrive.com/settings/files>`_.
 
         Args:
             item_type: The item type. Values: Values: `deal`, `organisation`,
-                       `person`.
+            `person`.
             item_id: The ID of the item to associate the file with.
             remote_id: The remote item ID.
             remote_location: The location type to send the file to. Only 
-                             `googledrive` is supported at the moment.
+            `googledrive` is supported at the moment.
         Returns:
             The linked File object.
         """

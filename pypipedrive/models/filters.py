@@ -14,28 +14,35 @@ class Filters(Model):
     the conditions of the filter are returned. Detailed definitions of filter 
     conditions and additional functionality is not yet available.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/Filters
+    See `Filters API reference <https://developers.pipedrive.com/docs/api/v1/Filters>`_.
 
     Get all filters.
-    GET[Cost:20] v1/filters
+
+      * GET[Cost:20] ``v1/filters``
 
     Get all filter helpers.
-    GET[Cost:20] v1/filters/helpers
+
+      * GET[Cost:20] ``v1/filters/helpers``
 
     Get one filter.
-    GET[Cost:2] v1/filters/{id}
+
+      * GET[Cost:2] ``v1/filters/{id}``
 
     Add a new filter.
-    POST[Cost:10] v1/filters
+
+      * POST[Cost:10] ``v1/filters``
 
     Update filter.
-    PUT[Cost:10] v1/filters/{id}   
 
-    Delete multiple filters in bulk
-    DELETE[Cost:10] v1/filters
+      * PUT[Cost:10] ``v1/filters/{id}``
 
-    Delete a filter
-    DELETE[Cost:6] v1/productFields/{id}
+    Delete multiple filters in bulk.
+
+      * DELETE[Cost:10] ``v1/filters``
+
+    Delete a filter.
+
+      * DELETE[Cost:6] ``v1/filters/{id}``
     """
 
     id             = F.IntegerField("id", readonly=True)
@@ -52,15 +59,14 @@ class Filters(Model):
     class Meta:
         entity_name = "filters"
         version     = V1
-    
+
     @warn_endpoint_legacy
     @classmethod
     def helpers(cls) -> Dict:
         """
         Returns all supported filter helpers. It helps to know what conditions 
         and helpers are available when you want to add or update filters. For 
-        more information, see the tutorial for adding a filter:
-        https://pipedrive.readme.io/docs/adding-a-filter
+        more information, see the tutorial for `adding a filter <https://pipedrive.readme.io/docs/adding-a-filter>`_.
 
         Returns:
             A dictionary containing filter helpers (operators,

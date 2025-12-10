@@ -11,10 +11,11 @@ class Billing(Model):
     Billing is responsible for handling your subscriptions, payments, plans and 
     add-ons.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/Billing
+    See `Billing API reference <https://developers.pipedrive.com/docs/api/v1/Billing>`_.
 
     Returns the add-ons for a single company.
-    GET[Cost:20] v1/billing/subscriptions/addons
+
+      * GET[Cost:20] ``v1/billing/subscriptions/addons``
     """
 
     code = F.TextField("code")  # leadbooster_v2, prospector, smart_docs_v2 ...

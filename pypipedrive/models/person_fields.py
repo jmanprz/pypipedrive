@@ -1,9 +1,8 @@
 from typing import Dict, List
 from typing_extensions import Self
 from pypipedrive.api import V1, V2
-from pypipedrive.api.api import ApiResponse
 from pypipedrive.utils import warn_endpoint_legacy
-from pypipedrive.orm.model import Model, SaveResult
+from pypipedrive.orm.model import Model
 from pypipedrive.orm import fields as F
 
 
@@ -18,47 +17,56 @@ class PersonFields(Model):
     is the case with monetary, daterange and timerange fields - each of these 
     fields will have one additional data field in addition to the one presented 
     in the context of person fields. For example, if there is a monetary field 
-    with the key `ffk9s9` stored on the account, `ffk9s9` would hold the numeric 
-    value of the field, and `ffk9s9_currency` would hold the ISO currency code 
+    with the key ``ffk9s9`` stored on the account, ``ffk9s9`` would hold the numeric 
+    value of the field, and ``ffk9s9_currency`` would hold the ISO currency code 
     that goes along with the numeric value. To find out which data fields are 
     available, fetch one person and list its keys.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/DealFields
+    See `PersonFields API reference <https://developers.pipedrive.com/docs/api/v1/PersonFields>`_.
 
-    Get all person fields
-    GET[Cost:20] v1/personFields DEPRECATED
-    GET[Cost:10] v2/personFields
+    Get all person fields.
 
-    Get one person field
-    GET[Cost:2] v1/personFields/{id} DEPRECATED
-    GET[Cost:1] v2/personFields/{field_code}
+      * GET[Cost:20] ``v1/personFields`` **DEPRECATED**
+      * GET[Cost:10] ``v2/personFields``
 
-    Add a new person field
-    POST[Cost:10] v1/personFields DEPRECATED
-    POST[Cost:5]  v2/personFields
+    Get one person field.
 
-    Add person field options in bulk
-    POST[Cost:5] v2/personFields/{field_code}/options
+      * GET[Cost:2] ``v1/personFields/{id}`` **DEPRECATED**
+      * GET[Cost:1] ``v2/personFields/{field_code}``
 
-    Update a person field
-    PUT[Cost:10]  v1/personFields/{id} DEPRECATED
-    PATCH[Cost:5] v2/personFields/{field_code}
+    Add a new person field.
 
-    Update person field options in bulk
-    PATCH[Cost:5] v2/personFields/{field_code}/options
-    
-    Delete multiple person fields in bulk
-    DELETE[Cost:10] v1/personFields
+      * POST[Cost:10] ``v1/personFields`` **DEPRECATED**
+      * POST[Cost:5]  ``v2/personFields``
 
-    Delete a person field
-    DELETE[Cost:6] v1/personFields/{id} DEPRECATED
-    DELETE[Cost:3] v2/personFields/{field_code}
+    Add person field options in bulk.
 
-    Delete person field options in bulk
-    DELETE[Cost:3] v2/personFields/{field_code}/options
+      * POST[Cost:5] ``v2/personFields/{field_code}/options``
+
+    Update a person field.
+
+      * PUT[Cost:10]  ``v1/personFields/{id}`` **DEPRECATED**
+      * PATCH[Cost:5] ``v2/personFields/{field_code}``
+
+    Update person field options in bulk.
+
+      * PATCH[Cost:5] ``v2/personFields/{field_code}/options``
+
+    Delete multiple person fields in bulk.
+
+      * DELETE[Cost:10] ``v1/personFields``
+
+    Delete a person field.
+
+      * DELETE[Cost:6] ``v1/personFields/{id}`` **DEPRECATED**
+      * DELETE[Cost:3] ``v2/personFields/{field_code}``
+
+    Delete person field options in bulk.
+
+      * DELETE[Cost:3] ``v2/personFields/{field_code}/options``
     """
 
-    id                         = F.TextField("id")  # Used for compatibility
+    id                         = F.TextField("id")  # Used for compatibility (=None)
     field_name                 = F.TextField("field_name")
     field_code                 = F.TextField("field_code")
     field_type                 = F.TextField("field_type")
@@ -70,17 +78,19 @@ class PersonFields(Model):
     class Meta:
         entity_name = "personFields"
         version     = V2
-        field_id    = "field_code"  # Indicates field used as the object id
+        field_id    = "field_code"  # Indicates field used as the object id.
     
     @classmethod
     def get(cls, id: str, params: Dict = {}) -> Self:
         """
-        Returns metadata about a specific person field. Allowed query params:
-            - include_fields (str): Optional comma separated string array of 
-                                    additional data namespaces to include in 
-                                    response. Values: `ui_visibility`, 
-                                    `important_fields`, `required_fields`.
-        
+        Returns metadata about a specific person field.
+
+        Allowed query params:
+
+            - ``include_fields`` (str): Optional comma separated string array 
+              of additional data namespaces to include in response. Values: 
+              `ui_visibility`, `important_fields`, `required_fields`.
+
         Args:
             id: The code of the person field to retrieve.
             params: Additional query parameters.
@@ -98,7 +108,7 @@ class PersonFields(Model):
 
         Args:
             option_labels: A list of option dictionaries to add. Each item must 
-                           contain a label. At least one option is required.
+            contain a label. At least one option is required.
         Returns:
             A dictionary containing the newly added options.
         """
@@ -128,7 +138,7 @@ class PersonFields(Model):
 
         Args:
             options: A list of option dictionaries to update. Each item must 
-                     contain an id and label.
+            contain an id and label.
         Returns:
             A dictionary containing the updated options.
         """

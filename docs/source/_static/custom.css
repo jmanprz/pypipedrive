@@ -1,0 +1,26 @@
+.logo-index {
+	max-height: 150px !important;
+}
+
+/**
+ * Insert logo in sidebar
+ */
+.wy-nav-side .brand a {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding-left: 0.5rem;
+  color: transparent !important;
+}
+
+.wy-nav-side .brand a::before {
+  content: "";
+  display: inline-block;
+  width: 225px;
+  height: 50px !important;
+  margin-right: 0rem !important;
+  background: url('../_static/logo-text.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}

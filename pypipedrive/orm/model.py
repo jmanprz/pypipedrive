@@ -3,7 +3,7 @@ import logging
 import pydantic
 from functools import lru_cache
 from pypipedrive import utils
-from pypipedrive.api import Api, ApiResponse
+from pypipedrive.api import Api, ApiResponse, V1, V2
 from pypipedrive.orm.fields import Field
 from pypipedrive.orm.types import FieldName, ItemSearchDict, EntityUpdateDict
 from typing import Any, Dict, List, Optional, Union, Set
@@ -455,6 +455,9 @@ class Model:
             response : ApiResponse = api.post(uri=entity_name, json=field_values)
             self._init = True  # Bypass readonly checks during initialization
             record: Dict = response.data
+            # Particular case for Goals, it returns {"goal": {...} } on creation
+            if entity_name == "goals" and "goal" in record:
+                record = record.get("goal", {})
             field_id = self._get_meta("field_id")
             self.id = record.get("id" if field_id is None else field_id)
             self.add_time = utils.datetime_from_iso_str(record.get("add_time", None))
@@ -485,7 +488,12 @@ class Model:
             }
 
         uri = f"{entity_name}/{id}"
-        method = api.update_method()
+        # Special case where LeadFields/LeadLabels use PATCH instead of PUT 
+        # for updates even though they are V1 endpoints.
+        if version == V1 and entity_name in ["leads", "leadLabels"]:
+            method = api.patch
+        else:
+            method = api.update_method()
         if additional_params:
             field_values.update(additional_params)
         response: ApiResponse = method(uri=uri, json=field_values)

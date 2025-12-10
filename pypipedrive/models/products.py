@@ -23,79 +23,99 @@ class Products(Model):
     to deals. In the context of instatiation, a custom price, quantity, duration 
     and discount can be applied.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/Products
+    See `Products API reference <https://developers.pipedrive.com/docs/api/v1/Products>`_.
 
     Get all products.
-    GET[Cost:20] v1/products DEPRECATED
-    GET[Cost:10] v2/products
+
+      * GET[Cost:20] ``v1/products`` **DEPRECATED**
+      * GET[Cost:10] ``v2/products``
 
     Search products.
-    GET[Cost:40] v1/products/search DEPRECATED
-    GET[Cost:20] v2/products/search
+
+      * GET[Cost:40] ``v1/products/search`` **DEPRECATED**
+      * GET[Cost:20] ``v2/products/search``
 
     Get one product.
-    GET[Cost:20] v1/products/{id} DEPRECATED
-    GET[Cost:10] v2/products/{id}
 
-    Get deals where a product is attached to
-    GET[Cost:20] v1/products/{id}/deals
+      * GET[Cost:20] ``v1/products/{id}`` **DEPRECATED**
+      * GET[Cost:10] ``v2/products/{id}``
+
+    Get deals where a product is attached to.
+
+      * GET[Cost:20] ``v1/products/{id}/deals``
 
     List files attached to a product
-    GET[Cost:20] v1/products/{id}/files
+      * GET[Cost:20] ``v1/products/{id}/files``
 
     List followers of a product
-    GET[Cost:20] v1/products/{id}/followers DEPRECATED
-    GET[Cost:10] v2/products/{id}/followers
 
-    List permitted users
-    GET[Cost:20] v1/products/{id}/permittedUsers
+      * GET[Cost:20] ``v1/products/{id}/followers`` **DEPRECATED**
+      * GET[Cost:10] ``v2/products/{id}/followers``
 
-    List followers changelog of a product
-    GET[Cost:10] v2/products/{id}/followers/changelog
+    List permitted users.
 
-    Get all product variations
-    GET[Cost:10] v2/products/{id}/variations
+      * GET[Cost:20] ``v1/products/{id}/permittedUsers``
 
-    Get image of a product [BETA]
-    GET[Cost:10] v2/products/{id}/images
+    List followers changelog of a product.
 
-    Add a product
-    POST[Cost:10] v1/products DEPRECATED
-    POST[Cost:5]  v2/products
+      * GET[Cost:10] ``v2/products/{id}/followers/changelog``
 
-    Add a follower to a product
-    POST[Cost:10] v1/products/{id}/followers DEPRECATED
-    POST[Cost:5]  v2/products/{id}/followers
+    Get all product variations.
 
-    Duplicate a product
-    POST[Cost:5] v2/products/{id}/duplicate
+      * GET[Cost:10] ``v2/products/{id}/variations``
 
-    Add a product variation
-    POST[Cost:5] v2/products/{id}/variations
+    Get image of a product [BETA].
 
-    Upload an image for a product [BETA]
-    POST[Cost:5] v2/products/{id}/images
+      * GET[Cost:10] ``v2/products/{id}/images``
 
-    Update a product
-    PUT[Cost:10]  v1/products/{id} DEPRECATED
-    PATCH[Cost:5] v2/products/{id}
+    Add a product.
 
-    Update an image for a product [BETA]
-    PUT[Cost:20] v2/products/{id}/images
+      * POST[Cost:10] ``v1/products`` **DEPRECATED**
+      * POST[Cost:5]  ``v2/products``
+
+    Add a follower to a product.
+
+      * POST[Cost:10] ``v1/products/{id}/followers`` **DEPRECATED**
+      * POST[Cost:5]  ``v2/products/{id}/followers``
+
+    Duplicate a product.
+
+      * POST[Cost:5] ``v2/products/{id}/duplicate``
+
+    Add a product variation.
+
+      * POST[Cost:5] ``v2/products/{id}/variations``
+
+    Upload an image for a product [BETA].
+
+      * POST[Cost:5] ``v2/products/{id}/images``
+
+    Update a product.
+
+      * PUT[Cost:10]  ``v1/products/{id}`` **DEPRECATED**
+      * PATCH[Cost:5] ``v2/products/{id}``
+
+    Update an image for a product [BETA].
+
+      * PUT[Cost:20] ``v2/products/{id}/images``
 
     Delete a product.
-    DELETE[Cost:6] v1/products/{id} DEPRECATED
-    DELETE[Cost:3] v2/products/{id}
+
+      * DELETE[Cost:6] ``v1/products/{id}`` **DEPRECATED**
+      * DELETE[Cost:3] ``v2/products/{id}``
 
     Delete a follower from a product.
-    DELETE[Cost:6] v1/products/{id}/followers/{follower_id} DEPRECATED
-    DELETE[Cost:3] v2/products/{id}/followers/{follower_id}
 
-    Delete a product variation
-    DELETE[Cost:3] v2/products/{id}/variations/{product_variation_id}
+      * DELETE[Cost:6] ``v1/products/{id}/followers/{follower_id}`` **DEPRECATED**
+      * DELETE[Cost:3] ``v2/products/{id}/followers/{follower_id}``
 
-    Delete the image of a product
-    DELETE[Cost:6] v2/products/{id}/images
+    Delete a product variation.
+
+      * DELETE[Cost:3] ``v2/products/{id}/variations/{product_variation_id}``
+
+    Delete the image of a product.
+
+      * DELETE[Cost:6] ``v2/products/{id}/images``
     """
 
     id                       = F.IntegerField("id", readonly=True)
@@ -119,7 +139,7 @@ class Products(Model):
     class Meta:
         entity_name = "products"
         version     = V2
-    
+
     @classmethod
     def batch_delete(cls, *args, **kwargs) -> Any:
         raise NotImplementedError("Products.batch_delete() is not allowed.")
@@ -131,17 +151,21 @@ class Products(Model):
         is a wrapper of `/v1/itemSearch` with a narrower OAuth scope.
 
         Allowed query params:
-            - term (str): The search term to look for.
-            - fields (str): Comma-separated list of fields to search in.
-            - exact_match (bool): full exact matches against the given term returned?
-            - include_fields (str): optional fields to include (comma-separated).
-            - limit (int): number of results to return (default: 10, max: 100).
-            - cursor (str): cursor for pagination.
+
+            - ``term`` (str): The search term to look for.
+            - ``fields`` (str): Comma-separated list of fields to search in.
+            - ``exact_match`` (bool): full exact matches against the given 
+              term returned?
+            - ``include_fields`` (str): optional fields to include 
+              (comma-separated).
+            - ``limit`` (int): number of results to return (default: 10, 
+              max: 100).
+            - ``cursor`` (str): cursor for pagination.
 
         Args:
-            term: The search term to look for. Minimum 2 characters
-                  (or 1 if using exact_match). Please note that the search 
-                  term has to be URL encoded.
+            term: The search term to look for. Minimum 2 characters (or 1 if 
+            using exact_match). Please note that the search term has to be 
+            URL encoded.
             params: Query params passed to the API (copied internally).
         Returns:
             List of ItemSearch objects.
@@ -151,15 +175,19 @@ class Products(Model):
     @warn_endpoint_legacy
     def deals(self, status: str = None, params: Dict = {}) -> List[Dict]:
         """
-        V1 endpoint. List deals attached to a product. Allowed query params:
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - cursor (str): For pagination, the marker (an opaque string value) 
-                            representing the first item on the next page
-            - status (str): Only fetch deals with a specific status. If omitted, 
-                            all not deleted deals are returned. If set to deleted,
-                            deals that have been deleted up to 30 days ago will 
-                            be included. Default `all_not_deleted`.
-                            Values: open, won, lost, deleted, all_not_deleted.
+        List deals attached to a product.
+
+        Allowed query params:
+
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
+            - ``status`` (str): Only fetch deals with a specific status. If 
+              omitted, all not deleted deals are returned. If set to deleted,
+              deals that have been deleted up to 30 days ago will be included. 
+              Default `all_not_deleted`. Values: open, won, lost, deleted, 
+              all_not_deleted.
 
         Args:
             status (str): Filter deals by status.
@@ -178,10 +206,14 @@ class Products(Model):
     @warn_endpoint_legacy
     def files(self, params: Dict = {}) -> List[Files]:
         """
-        V1 endpoint. List files attached to a product. Allowed query params:
-            - start (int): The starting offset of the page.
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - sort (str): Supported fields: `id`, `update_time`
+        List files attached to a product.
+
+        Allowed query params:
+
+            - ``start`` (int): The starting offset of the page.
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``sort`` (str): Supported fields: `id`, `update_time`
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -194,10 +226,14 @@ class Products(Model):
 
     def followers(self, params: Dict = {}) -> List[Dict]:
         """
-        List followers of a product. Allowed query params:
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - cursor (str): For pagination, the marker (an opaque string value) 
-                            representing the first item on the next page
+        List followers of a product.
+
+        Allowed query params:
+
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -206,11 +242,11 @@ class Products(Model):
         """
         uri = f"{self._get_meta('entity_name')}/{self.id}/followers"
         return self.get_api(version=V2).all(uri=uri, params=params).to_dict()
-    
+
     @warn_endpoint_legacy
     def permitted_users(self) -> List[Dict]:
         """
-        V1 endpoint. List permitted users of a product.
+        List permitted users of a product.
 
         Returns:
             A list of permitted user dictionaries.
@@ -220,10 +256,14 @@ class Products(Model):
 
     def followers_changelog(self, params: Dict = {}) -> List[Dict]:
         """
-        List followers changelog of a product. Allowed query params:
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - cursor (str): For pagination, the marker (an opaque string value) 
-                            representing the first item on the next page
+        List followers changelog of a product.
+
+        Allowed query params:
+
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -232,13 +272,17 @@ class Products(Model):
         """
         uri = f"{self._get_meta('entity_name')}/{self.id}/followers/changelog"
         return self.get_api(version=V2).all(uri=uri, params=params).to_dict()
-    
+
     def variations(self, params: Dict = {}) -> List[Dict]:
         """
-        Get all product variations. Allowed query params:
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - cursor (str): For pagination, the marker (an opaque string value) 
-                            representing the first item on the next page
+        Get all product variations.
+
+        Allowed query params:
+
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -306,7 +350,7 @@ class Products(Model):
         )
         uri = f"{self._get_meta('entity_name')}/{self.id}/images"
         return self.get_api(version=V2).put(uri=uri, files=files).to_dict()
-    
+
     @warn_endpoint_beta
     def delete_image(self) -> Dict:
         """
@@ -332,7 +376,7 @@ class Products(Model):
         uri = f"{self._get_meta('entity_name')}/{self.id}/followers"
         body = {"user_id": user_id}
         return self.get_api(version=V2).post(uri=uri, json=body).to_dict()
-    
+
     def delete_follower(self, follower_id: int = None) -> Dict:
         """
         Delete a follower from a product.
@@ -385,7 +429,7 @@ class Products(Model):
         params = {"name": name, "prices": payload}
         uri = f"{self._get_meta('entity_name')}/{self.id}/variations"
         return self.get_api(version=V2).post(uri=uri, json=params).to_dict()
-        
+
     def delete_variation(self, product_variation_id: int = None) -> Dict:
         """
         Delete a product variation.

@@ -14,33 +14,40 @@ class Activities(Model):
     can be of different type (such as call, meeting, lunch or a custom type - 
     see ActivityTypes object) and can be assigned to a particular user. Note that activities can also be created without a specific date/time.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/Activities
+    See `Activities API reference <https://developers.pipedrive.com/docs/api/v1/Activities>`_.
 
-    Get all activities (BETA) activities/collection
-    GET[Cost:20] v1/activities DEPRECATED
-    GET[Cost:10] api/v2/activities
+    Get all activities (BETA) activities/collection.
+
+      * GET[Cost:20] ``v1/activities`` **DEPRECATED**
+      * GET[Cost:10] ``api/v2/activities``
+
+    Returns all activities.
+
+      * GET[Cost:10] ``v1/activities/collection`` **DEPRECATED**
+
+    Get details of an activity.
+
+      * GET[Cost:2] ``v1/activities/{id}`` **DEPRECATED**
+      * GET[Cost:1] ``api/v2/activities/{id}``
     
-    Returns all activities. Use GET /api/v2/activities
-    GET[Cost:10] v1/activities/collection DEPRECATED
-    
-    Get details of an activity
-    GET[Cost:2] v1/activities/{id} DEPRECATED
-    GET[Cost:1] api/v2/activities/{id}
-    
-    Add an activity
-    POST[Cost:10] v1/activities DEPRECATED
-    POST[Cost:5]  api/v2/activities
-    
-    Update an activity
-    PUT[Cost:10]  v1/activities/{id} DEPRECATED
-    PATCH[Cost:5] api/v2/activities/{id}
-    
-    Delete multiple activities in bulk
-    DELETE[Cost:10] v1/activities DEPRECATED
-    
-    Delete an activity
-    DELETE[Cost:6] v1/activities/{id} DEPRECATED
-    DELETE[Cost:3] api/v2/activities/{id}
+    Add an activity.
+
+      * POST[Cost:10] ``v1/activities`` **DEPRECATED**
+      * POST[Cost:5]  ``api/v2/activities``
+
+    Update an activity.
+
+      * PUT[Cost:10]  ``v1/activities/{id}`` **DEPRECATED**
+      * PATCH[Cost:5] ``api/v2/activities/{id}``
+
+    Delete multiple activities in bulk.
+
+      * DELETE[Cost:10] ``v1/activities`` **DEPRECATED**
+
+    Delete an activity.
+
+      * DELETE[Cost:6] ``v1/activities/{id}`` **DEPRECATED**
+      * DELETE[Cost:3] ``api/v2/activities/{id}``
     """
 
     id                        = F.IntegerField("id", readonly=True)
@@ -80,7 +87,7 @@ class Activities(Model):
     @classmethod
     def fields(cls) -> List[ActivityFields]:
         """
-        V1 endpoint that returns the list of field names for the Activities model.
+        Returns the list of field names for the Activities model.
         """
         return ActivityFields.all()
     
@@ -95,6 +102,6 @@ class Activities(Model):
     @classmethod
     def types(cls) -> List[ActivityTypes]:
         """
-        V1 endpoint that returns the list of field types for the Activities model.
+        Returns the list of field types for the Activities model.
         """
         return ActivityTypes.all()

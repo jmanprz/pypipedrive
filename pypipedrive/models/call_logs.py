@@ -2,7 +2,7 @@ from typing import Dict, List
 from typing_extensions import Self
 from pypipedrive.api import V1
 from pypipedrive.utils import warn_endpoint_legacy, build_multipart_file_tuple
-from pypipedrive.orm.model import Model
+from pypipedrive.orm.model import Model, SaveResult
 from pypipedrive.orm import fields as F
 
 
@@ -14,25 +14,27 @@ class CallLogs(Model):
     logs do differ from other activities, as they only receive the information 
     needed to describe the phone call.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/CallLogs
+    See `CallLogs API reference <https://developers.pipedrive.com/docs/api/v1/CallLogs>`_.
 
     Returns all call logs assigned to a particular user.
-    GET[Cost:20] v1/callLogs
+
+      * GET[Cost:20] ``v1/callLogs``
 
     Returns details of a specific call log.
-    GET[Cost:2] v1/callLogs/{id}
+
+      * GET[Cost:2] ``v1/callLogs/{id}``
 
     Adds a new call log.
-    POST[Cost:10] v1/callLogs
+
+      * POST[Cost:10] ``v1/callLogs``
 
     Attach an audio file to the call log.
-    POST[Cost:10] v1/callLogs/{id}/recording
 
-    Deletes a call log. If there is an audio recording attached to it, it will 
-    also be deleted. The related activity will not be removed by this request. 
-    If you want to remove the related activities, please use the endpoint which 
-    is specific for activities.
-    DELETE[Cost:6] v1/callLogs/{id}
+      * POST[Cost:10] ``v1/callLogs/{id}/recording``
+
+    Deletes a call log.
+
+      * DELETE[Cost:6] ``v1/callLogs/{id}``
     """
 
     id                = F.TextField("id")
@@ -70,28 +72,31 @@ class CallLogs(Model):
     def all(cls, *args, **kwargs) -> List[Self]:
         """
         Returns all call logs assigned to a particular user.
+
         Allowed query parameters:
-            - start (int): Pagination start. Defaults: 0.
-            - limit (int): For pagination, the limit of entries to be returned. 
-                           The upper limit is 50.
-        
+
+            - ``start`` (int): Pagination start. Defaults: 0.
+            - ``limit`` (int): For pagination, the limit of entries to be returned. 
+              The upper limit is 50.
+
         Returns:
             A list of CallLog instances.
         """
         return super().all(*args, **kwargs)
 
     @warn_endpoint_legacy
-    def save(self, *args, **kwargs) -> "SaveResult":  # type: ignore
+    def save(self, *args, **kwargs) -> SaveResult:
         """
         Adds a new call log. Mandatory fields:
-            - outcome (str): Describes the outcome of the call. Values: connected,
-                             no_answer, left_message, left_voicemail, wrong_number,
-                             busy.
-            - to_phone_number (str): The number called.
-            - start_time (str): The date and time of the start of the call in UTC. 
-                                Format: YYYY-MM-DD HH:MM:SS.
-            - end_time (str): The date and time of the end of the call in UTC. 
-                              Format: YYYY-MM-DD HH:MM:SS.
+
+            - ``outcome`` (str): Describes the outcome of the call. Values: 
+              connected, no_answer, left_message, left_voicemail, wrong_number, 
+              busy.
+            - ``to_phone_number`` (str): The number called.
+            - ``start_time`` (str): The date and time of the start of the call 
+              in UTC. Format: YYYY-MM-DD HH:MM:SS.
+            - ``end_time`` (str): The date and time of the end of the call in 
+              UTC. Format: YYYY-MM-DD HH:MM:SS.
         """
         return super().save(*args, **kwargs)
 

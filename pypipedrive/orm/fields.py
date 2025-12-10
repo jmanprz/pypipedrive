@@ -23,19 +23,24 @@ from typing import (
 from .types import (
     assert_typed_dict,
     assert_typed_obj,
-    LabelValuePrimaryDict,
     AddressDict,
-    MonetaryDict,
-    CustomFieldsProductDict,
-    PriceDict,
-    ParticipantDict,
+    AssigneeDict,
     AttendeeDict,
+    CodeDict,
+    CustomFieldsProductDict,
+    ExpectedOutcomeDict,
+    GoalDurationDict,
+    IdLabelDict,
     ItemSearchDict,
     ItemSearchDealDict,
     ItemSearchPersonDict,
-    IdLabelDict,
+    LabelValuePrimaryDict,
+    MonetaryDict,
+    ParticipantDict,
+    PriceDict,
+    SeasonalityDict,
     SubfieldDict,
-    CodeDict,
+    TypeDict,
 )
 from pypipedrive import utils
 
@@ -410,6 +415,7 @@ class DateField(Field[str, datetime.date, None]):
                     f"be converted (value: {value})."
                 )
 
+
 class TimeField(Field[str, datetime.time, None]):
 
     missing_value = None
@@ -540,6 +546,46 @@ class CustomFieldsProductField(_DictField[CustomFieldsProductDict]):
 
     contains_type = CustomFieldsProductDict
 
+
+class AssigneeField(_DictField[AssigneeDict]):
+    """
+    Accepts a `dict` with schema `AssigneeDict` (Goal).
+    """
+
+    contains_type = AssigneeDict
+
+
+class TypeField(_DictField[TypeDict]):
+    """
+    Accepts a `dict` with schema `TypeDict` (Goal).
+    """
+
+    contains_type = TypeDict
+
+
+class GoalDurationField(_DictField[GoalDurationDict]):
+    """
+    Accepts a `dict` with schema `GoalDurationDict` (Goal).
+    """
+
+    contains_type = GoalDurationDict
+
+
+class SeasonalityField(_DictField[SeasonalityDict]):
+    """
+    Accepts a `dict` with schema `SeasonalityDict` (Goal).
+    """
+
+    contains_type = SeasonalityDict
+
+
+class ExpectedOutcomeField(_DictField[ExpectedOutcomeDict]):
+    """
+    Accepts a `dict` with schema `ExpectedOutcomeDict` (Goal).
+    """
+
+    contains_type = ExpectedOutcomeDict
+
 # === List fields ===
 
 class _ListField(
@@ -664,12 +710,12 @@ class ImField(_ValidatingListField[LabelValuePrimaryDict]):
     contains_type = LabelValuePrimaryDict
 
 
-class LabelIdsField(_ValidatingListField[int]):
+class LabelIdsField(_ValidatingListField[Union[int, str]]):
     """
     Accepts a list of integers.
     """
 
-    contains_type = int
+    contains_type = Union[int, str]
 
 
 class ParticipantField(_ValidatingListField[ParticipantDict]):

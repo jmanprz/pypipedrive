@@ -15,78 +15,99 @@ class Organizations(Model):
     deals with. Persons can be associated with organizations so that each 
     organization can contain one or more persons.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/Organizations
+    See `Organizations API reference <https://developers.pipedrive.com/docs/api/v1/Organizations>`_.
 
     Returns all organizations.
-    GET[Cost:20] v1/organizations DEPRECATED
-    GET[Cost:10] v2/organizations
+
+      * GET[Cost:20] ``v1/organizations`` **DEPRECATED**
+      * GET[Cost:10] ``v2/organizations``
 
     Returns all organizations.
-    GET[Cost:10] v1/organizations/collection DEPRECATED
+
+      * GET[Cost:10] ``v1/organizations/collection`` **DEPRECATED**
 
     Searches all organizations by name, address, notes and/or custom fields.
-    GET[Cost:40] v1/organizations/search DEPRECATED
-    GET[Cost:20] v2/organizations/search
+
+      * GET[Cost:40] ``v1/organizations/search`` **DEPRECATED**
+      * GET[Cost:20] ``v2/organizations/search``
 
     Returns the details of a specific organization.
-    GET[Cost:2] v1/organizations/{id} DEPRECATED
-    GET[Cost:1] v2/organizations/{id}
+
+      * GET[Cost:2] ``v1/organizations/{id}`` **DEPRECATED**
+      * GET[Cost:1] ``v2/organizations/{id}``
 
     Lists activities associated with an organization.
-    GET[Cost:20] v1/organizations/{id}/activities DEPRECATED
+
+      * GET[Cost:20] ``v1/organizations/{id}/activities`` **DEPRECATED**
 
     Lists updates about field values of an organization.
-    GET[Cost:20] v1/organizations/{id}/changelog
+
+      * GET[Cost:20] ``v1/organizations/{id}/changelog``
 
     Lists deals associated with an organization.
-    GET[Cost:20] v1/organizations/{id}/deals DEPRECATED
+
+      * GET[Cost:20] ``v1/organizations/{id}/deals`` **DEPRECATED**
 
     Lists files associated with an organization.
-    GET[Cost:20] v1/organizations/{id}/files
+
+      * GET[Cost:20] ``v1/organizations/{id}/files``
 
     List updates about an organization.
-    GET[Cost:40] v1/organizations/{id}/flow
+
+      * GET[Cost:40] ``v1/organizations/{id}/flow``
 
     List followers of an organization.
-    GET[Cost:10] v2/organizations/{id}/followers
+
+      * GET[Cost:10] ``v2/organizations/{id}/followers``
 
     List mail messages associated with an organization.
-    GET[Cost:20] v1/organizations/{id}/mailMessages
+
+      * GET[Cost:20] ``v1/organizations/{id}/mailMessages``
 
     List permitted users.
-    GET[Cost:10] v1/organizations/{id}/permittedUsers
+
+      * GET[Cost:10] ``v1/organizations/{id}/permittedUsers``
 
     List persons of an organization.
-    GET[Cost:20] v1/organizations/{id}/persons DEPRECATED
+
+      * GET[Cost:20] ``v1/organizations/{id}/persons`` **DEPRECATED**
 
     List followers changelog of an organization.
-    GET[Cost:10] v2/organizations/{id}/followers/changelog
+
+      * GET[Cost:10] ``v2/organizations/{id}/followers/changelog``
 
     Add an organization.
-    POST[Cost:5] v1/organizations DEPRECATED
-    POST[Cost:5] v2/organizations
+
+      * POST[Cost:5] ``v1/organizations`` **DEPRECATED**
+      * POST[Cost:5] ``v2/organizations`` 
 
     Add a follower to an organization.
-    POST[Cost:10] v1/organizations/{id}/followers DEPRECATED
-    POST[Cost:5]  v2/organizations/{id}/followers
+
+      * POST[Cost:10] ``v1/organizations/{id}/followers`` **DEPRECATED**
+      * POST[Cost:5]  ``v2/organizations/{id}/followers``
 
     Update an organization.
-    PUT[Cost:10]  v1/organizations/{id} DEPRECATED
-    PATCH[Cost:5] v2/organizations/{id}
+
+      * PUT[Cost:10]  ``v1/organizations/{id}`` **DEPRECATED**
+      * PATCH[Cost:5] ``v2/organizations/{id}``
 
     Merge two organizations
-    PUT[Cost:40] v1/organizations/{id}/merge
+
+      * PUT[Cost:40] ``v1/organizations/{id}/merge``
 
     Delete multiple organizations in bulk.
-    DELETE[Cost:10] v1/organizations DEPRECATED
+
+      * DELETE[Cost:10] ``v1/organizations`` **DEPRECATED**
 
     Delete an organization.
-    DELETE[Cost:6] v1/organizations/{id} DEPRECATED
-    DELETE[Cost:3] v2/organizations/{id}
+
+      * DELETE[Cost:6] ``v1/organizations/{id}`` **DEPRECATED**
+      * DELETE[Cost:3] ``v2/organizations/{id}``
 
     Delete a follower from an organization.
-    DELETE[Cost:6] v1/organizations/{id}/followers/{follower_id} DEPRECATED
-    DELETE[Cost:3] v2/organizations/{id}/followers/{follower_id}
+
+      * DELETE[Cost:6] ``v1/organizations/{id}/followers/{follower_id}`` **DEPRECATED**
+      * DELETE[Cost:3] ``v2/organizations/{id}/followers/{follower_id}``
     """
 
     id          = F.IntegerField("id", readonly=True)
@@ -107,40 +128,40 @@ class Organizations(Model):
     def all(cls, *args, **kwargs) -> List[Self]:
         """
         Returns all organizations.
-        
+
         Allowed query parameters:
-            - filter_id (int): If supplied, only organizations matching the 
-                               specified filter are returned.
-            - ids (str): Optional comma separated string array of up to 100 
-                         entity ids to fetch. If `filter_id` is provided, this is 
-                         ignored. If any of the requested entities do not exist 
-                         or are not visible, they are not included in the response.
-            - owner_id (int): If supplied, only organization owned by the 
-                              specified user are returned. If `filter_id` is 
-                              provided, this is ignored.
-            - updated_since (str): If set, only organizations with an `update_time` 
-                                   later than or equal to this time are returned. 
-                                   In RFC3339 format, e.g. 2025-01-01T10:20:00Z.
-            - updated_till (str): If set, only organizations with an `update_time` 
-                                  earlier than this time are returned. In RFC3339 
-                                  format, e.g. 2025-01-01T10:20:00Z.
-            - sort_by (str): The field to sort by. Supported fields: `id`, 
-                             `update_time`, `add_time`. Default: `id`.
-            - sort_direction (str): The sorting direction. Supported 
-                                    values: `asc`, `desc`. Default: `asc`.
-            - include_fields (str): Optional comma separated string array of 
-                                    additional fields to include.
-            - custom_fields (str): Optional comma separated string array of 
-                                   custom fields keys to include. If you are 
-                                   only interested in a particular set of custom 
-                                   fields, please use this parameter for faster 
-                                   results and smaller response.
-                                   A maximum of 15 keys is allowed.
-            - limit (int): For pagination, the limit of entries to be returned. 
-                           If not provided, 100 items will be returned. Please 
-                           note that a maximum value of 500 is allowed.
-            - cursor (str): For pagination, the marker (an opaque string value) 
-                            representing the first item on the next page.
+
+            - ``filter_id`` (int): If supplied, only organizations matching 
+              the specified filter are returned.
+            - ``ids`` (str): Optional comma separated string array of up to 
+              100 entity ids to fetch. If `filter_id` is provided, this is 
+              ignored. If any of the requested entities do not exist or are not 
+              visible, they are not included in the response.
+            - ``owner_id`` (int): If supplied, only organization owned by the 
+              specified user are returned. If `filter_id` is provided, this is 
+              ignored.
+            - ``updated_since`` (str): If set, only organizations with an 
+              `update_time` later than or equal to this time are returned. 
+              In RFC3339 format, e.g. 2025-01-01T10:20:00Z.
+            - ``updated_till`` (str): If set, only organizations with an 
+              `update_time` earlier than this time are returned. In RFC3339 
+              format, e.g. 2025-01-01T10:20:00Z.
+            - ``sort_by`` (str): The field to sort by. Supported fields: `id`, 
+              `update_time`, `add_time`. Default: `id`.
+            - ``sort_direction`` (str): The sorting direction. Supported 
+              values: `asc`, `desc`. Default: `asc`.
+            - ``include_fields`` (str): Optional comma separated string array 
+              of additional fields to include.
+            - ``custom_fields`` (str): Optional comma separated string array 
+              of custom fields keys to include. If you are only interested in a 
+              particular set of custom fields, please use this parameter for 
+              faster results and smaller response. A maximum of 15 keys is 
+              allowed.
+            - ``limit`` (int): For pagination, the limit of entries to be 
+              returned. If not provided, 100 items will be returned. Please 
+              note that a maximum value of 500 is allowed.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
 
         Returns:
             List of Organization instances.
@@ -154,9 +175,9 @@ class Organizations(Model):
         This endpoint is a wrapper of /v1/itemSearch with a narrower OAuth scope.
 
         Args:
-            term: The search term to look for. Minimum 2 characters
-                  (or 1 if using exact_match). Please note that the search 
-                  term has to be URL encoded.
+            term: The search term to look for. Minimum 2 characters (or 1 if 
+            using exact_match). Please note that the search term has to be URL 
+            encoded.
             params: Query params passed to the API (copied internally).
         Returns:
             List of ItemSearch objects.
@@ -167,10 +188,12 @@ class Organizations(Model):
     def changelog(self, params: Dict = {}) -> List[Dict]:
         """
         V1 endpoint. Lists updates about field values of an organization. 
+
         Allowed query params:
-            - limit (int): Items shown per page.
-            - cursor (str): For pagination, the marker (an opaque string value) 
-                            representing the first item on the next page
+
+            - ``limit`` (int): Items shown per page.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -184,12 +207,14 @@ class Organizations(Model):
     @warn_endpoint_legacy
     def files(self, params: Dict = {}) -> List[Files]:
         """
-        V1 endpoint. Lists files associated with an organization.
+        Lists files associated with an organization.
+
         Allowed query params:
-            - start (int): Pagination start. Default: 0.
-            - limit (int): Amount of results to return. Max: 100.
-            - sort (str): Sort order. Possible values: "id", "update_time".
-        
+
+            - ``start`` (int): Pagination start. Default: 0.
+            - ``limit`` (int): Amount of results to return. Max: 100.
+            - ``sort`` (str): Sort order. Possible values: "id", "update_time".
+
         Args:
             params: Query params passed to the API (copied internally).
         Returns:
@@ -202,20 +227,23 @@ class Organizations(Model):
     @warn_endpoint_legacy
     def flow(self, params: Dict = {}) -> Dict:
         """
-        V1 endpoint. Lists updates about an organization. Allowed query params:
-            - start (int): Pagination start. Default: 0.
-            - limit (int): Amount of results to return. Default: 100. Max:
-            - all_changes (str): Whether to show custom field updates or not. 
-                                 1 = Include custom field changes. If omitted 
-                                 returns changes without custom field updates.
-            -items (str): A comma-separated string for filtering out item 
-                          specific updates. Possible values: call, activity, 
-                          plannedActivity, change, note, deal, file, dealChange, 
-                          personChange, organizationChange, follower, dealFollower, 
-                          personFollower, organizationFollower, participant, 
-                          comment, mailMessage, mailMessageWithAttachment, 
-                          invoice, document, marketing_campaign_stat, 
-                          marketing_status_change.
+        Lists updates about an organization.
+        
+        Allowed query params:
+
+            - ``start`` (int): Pagination start. Default: 0.
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``all_changes`` (str): Whether to show custom field updates or 
+              not. 1 = Include custom field changes. If omitted returns changes 
+              without custom field updates.
+            - ``items`` (str): A comma-separated string for filtering out item 
+              specific updates. Possible values: call, activity, plannedActivity, 
+              change, note, deal, file, dealChange, personChange, 
+              organizationChange, follower, dealFollower, personFollower, 
+              organizationFollower, participant, comment, mailMessage, 
+              mailMessageWithAttachment, invoice, document, 
+              marketing_campaign_stat, marketing_status_change.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -227,10 +255,14 @@ class Organizations(Model):
 
     def followers(self, params: Dict = {}) -> List[Dict]:
         """
-        Lists users who are following the organization. Allowed query params:
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - cursor (str): For pagination, the marker (an opaque string value) 
-                            representing the first item on the next page
+        Lists users who are following the organization.
+
+        Allowed query params:
+
+            - ``limit`` (int): Amount of results to return. Default: 100.
+              Max: 500.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -243,10 +275,12 @@ class Organizations(Model):
     @warn_endpoint_legacy
     def mail_messages(self, params: Dict = {}) -> List[Dict]:
         """
-        V1 endpoint. List mail messages associated with an organization.
+        List mail messages associated with an organization.
+
         Allowed query params:
-            - start (int): Pagination start. Default: 0.
-            - limit (int): Items shown per page.
+
+            - ``start`` (int): Pagination start. Default: 0.
+            - ``limit`` (int): Items shown per page.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -259,7 +293,7 @@ class Organizations(Model):
     @warn_endpoint_legacy
     def permitted_users(self) -> List[Dict]:
         """
-        V1 endpoint. List users permitted to access an organization.
+        List users permitted to access an organization.
 
         Returns:
             List of permitted users data.
@@ -270,10 +304,13 @@ class Organizations(Model):
     def followers_changelog(self, params: Dict = {}) -> Dict:
         """
         Lists changelogs about users have followed the organization.
+
         Allowed query params:
-            - limit (int): Amount of results to return. Default: 100. Max: 500.
-            - cursor (str): For pagination, the marker (an opaque string value) 
-                            representing the first item on the next page
+
+            - ``limit`` (int): Amount of results to return. Default: 100. 
+              Max: 500.
+            - ``cursor`` (str): For pagination, the marker (an opaque string 
+              value) representing the first item on the next page.
 
         Args:
             params: Query params passed to the API (copied internally).
@@ -301,9 +338,8 @@ class Organizations(Model):
     @warn_endpoint_legacy
     def merge(self, merge_with_id: int) -> Dict:
         """
-        V1 endpoint. Merges an organization with another organization. For more 
-        information, see the tutorial for merging two organizations:
-        https://pipedrive.readme.io/docs/merging-two-organizations
+        Merges an organization with another organization. For more 
+        information, see the tutorial for `merging two organizations <https://pipedrive.readme.io/docs/merging-two-organizations>`_.
 
         Args:
             merge_with_id: The ID of the orgnization to merge into this organization.

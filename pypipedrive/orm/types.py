@@ -1,6 +1,8 @@
 import pydantic
+from datetime import date, datetime
 from typing import Any, Dict, List, Optional, Union, Type, TypeVar
 from typing_extensions import TypeAlias
+from pypipedrive.utils import date_from_iso_str
 
 
 T = TypeVar("T")
@@ -62,17 +64,17 @@ class AddressDict(pydantic.BaseModel):
 
 
 class MonetaryDict(pydantic.BaseModel):
-    value:    Optional[float] = None
-    currency: Optional[str]   = None
+    amount:   Optional[Union[float, int]] = None
+    currency: Optional[str] = None
 
 
 class PriceDict(pydantic.BaseModel):
-    product_id: Optional[int]    = None
-    price: Optional[float]       = None
-    currency: Optional[str]      = None
-    cost: Optional[float]        = None
+    product_id:  Optional[int] = None
+    price:       Optional[Union[float, int]] = None
+    currency:    Optional[str] = None
+    cost:        Optional[float] = None
     direct_cost: Optional[float] = None
-    notes: Optional[str]         = None
+    notes:       Optional[str] = None
 
 
 class ParticipantDict(pydantic.BaseModel):
@@ -125,6 +127,8 @@ class _ItemSearch(pydantic.BaseModel):
     stage:         Optional[_ItemIdName] = {}
     person:        Optional[_ItemIdName] = {}
     organization:  Optional[_ItemIdNameAddress] = {}
+    phones:        Optional[List[str]] = []
+    emails:        Optional[List[str]] = []
     custom_fields: Optional[List] = [] # of strings
     notes:         Optional[List] = [] # of strings
     is_archived:   Optional[bool] = None
@@ -204,3 +208,67 @@ class EntityUpdateDict(pydantic.BaseModel):
     change_source:            Optional[str] = None
     change_source_user_agent: Optional[str] = None
     is_bulk_update_flag:      Optional[bool] = None
+
+
+class AssigneeDict(pydantic.BaseModel):
+    """
+    Represents the assignee of a Goal.
+    """
+
+    id:   Optional[int]  = None
+    type: Optional[str]  = None
+
+
+class TypeDict(pydantic.BaseModel):
+    """
+    Represents the type of a Goal.
+    """
+
+    name:   Optional[str]  = None
+    params: Optional[Dict] = None
+
+
+class GoalDurationDict(pydantic.BaseModel):
+    """
+    Represents the duration of a Goal.
+    """
+
+    start:  Optional[Union[str, date]] = None
+    end:    Optional[Union[str, date]] = None
+
+    @pydantic.field_validator("start", mode="before")
+    @staticmethod
+    def _coerce_start(value: Optional[Union[str, date]]) -> Optional[date]:
+        return date_from_iso_str(value)
+
+    @pydantic.field_validator("end", mode="before")
+    @staticmethod
+    def _coerce_end(value: Optional[Union[str, date]]) -> Optional[date]:
+        return date_from_iso_str(value)
+
+
+class _SeasonalityIntervalDict(GoalDurationDict):
+    """
+    Represents a seasonality interval of a Goal (adds target to start/end).
+    """
+
+    target: Optional[Union[int, float]] = None
+
+
+class SeasonalityDict(pydantic.BaseModel):
+    """
+    Represents the seasonality of a Goal.
+    """
+
+    currency_id:     Optional[int] = None
+    intervals:       Optional[List[_SeasonalityIntervalDict]] = None
+    tracking_metric: Optional[str] = None
+
+
+class ExpectedOutcomeDict(pydantic.BaseModel):
+    """
+    Represents the expected outcome of a Goal.
+    """
+
+    target:          Optional[Union[float, int]] = None
+    tracking_metric: Optional[str] = None

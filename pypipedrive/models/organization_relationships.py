@@ -12,22 +12,26 @@ class OrganizationRelationships(Model):
     to each other. The relationship can be hierarchical (parent-child companies) 
     or lateral as defined by the type `field` - either `parent` or `related`.
 
-    Pipedrive API reference: https://developers.pipedrive.com/docs/api/v1/OrganizationRelationships
+    See `OrganizationRelationships API reference <https://developers.pipedrive.com/docs/api/v1/OrganizationRelationships>`_.
 
     Get all relationships for organization.
-    GET[Cost:20] v1/organizationRelationships
+
+      * GET[Cost:20] ``v1/organizationRelationships``
 
     Get one organization relationship.
-    GET[Cost:2] v1/organizationRelationships/{id}
-    
+      * GET[Cost:2] ``v1/organizationRelationships/{id}``
+
     Create an organization relationship.
-    POST[Cost:10] v1/organizationRelationships
+
+      * POST[Cost:10] ``v1/organizationRelationships``
 
     Update an organization relationship.
-    PUT[Cost:10] v1/organizationRelationships/{id}
+
+      * PUT[Cost:10] ``v1/organizationRelationships/{id}``
 
     Delete an organization relationship.
-    DELETE[Cost:6] v1/organizationRelationships/{id}
+
+      * DELETE[Cost:6] ``v1/organizationRelationships/{id}``
     """
 
     id                        = F.IntegerField("id")
@@ -82,20 +86,21 @@ class OrganizationRelationships(Model):
     def save(self, force: bool = False) -> SaveResult:
         """
         Updates and returns an organization relationship.
-        
-        Allowed query parameters:
-            - org_id (int): The ID of the base organization for the returned 
-                            calculated values.
-            - type (str):   The type of relationship (`parent` or `related`).
-            - rel_owner_org_id (int): The owner of this relationship. If type 
-                                      is parent, then the owner is the parent 
-                                      and the linked organization is the daughter.
-            - rel_linked_org_id (int): The linked organization in this 
-                                       relationship. If type is parent, then the 
-                                       linked organization is the daughter.
 
-        To create a new organization relationship, `type`, `rel_owner_org_id`
-        and `rel_linked_org_id` must be provided.
+        Allowed query parameters:
+
+            - ``org_id`` (int): The ID of the base organization for the 
+              returned calculated values.
+            - ``type`` (str):   The type of relationship (`parent` or `related`).
+            - ``rel_owner_org_id`` (int): The owner of this relationship. If 
+              type is parent, then the owner is the parent and the linked 
+              organization is the daughter.
+            - ``rel_linked_org_id`` (int): The linked organization in this 
+              relationship. If type is parent, then the linked organization is 
+              the daughter.
+
+        To create a new organization relationship, ``type``, 
+        ``rel_owner_org_id`` and ``rel_linked_org_id`` must be provided.
 
         Args:
             force: Whether to force the save operation.
@@ -108,7 +113,7 @@ class OrganizationRelationships(Model):
     def delete(self, *args, **kwargs) -> bool:
         """
         Deletes an organization relationship and returns the deleted ID.
-        
+
         Returns:
             A boolean indicating whether the deletion was successful.
         """
