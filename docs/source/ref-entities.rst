@@ -52,6 +52,9 @@ Pipedrive entities
 .. automodule:: pypipedrive.models.leads
     :members:
 
+.. automodule:: pypipedrive.models.mailbox
+    :members:
+
 .. automodule:: pypipedrive.models.organization_fields
     :members:
 

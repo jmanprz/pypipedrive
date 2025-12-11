@@ -57,10 +57,12 @@ We follow **Git Flow** branching strategy. See [CONTRIBUTING.rst](./CONTRIBUTING
 
 All pull requests **must adhere** to the following guidelines:
 
-1. Public functions/methods have docstrings and type annotations.
-2. New functionality is accompanied by clear, descriptive unit tests.
-3. You can run `tox` successfully.
-4. You have your [commits signed](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification).
+1. Branch follows the naming conventions outlined above and created from the appropriate base branch.
+2. Public functions/methods have docstrings and type annotations.
+3. New functionality is accompanied by clear, descriptive unit tests.
+4. Code passes ``make test``.
+5. You have your [commits signed](https://docs.github.com/en/authentication/managing-commit-signature-verification/about-commit-signature-verification).
+6. No merge conflicts with the target branch.
 
 Don't hesitate to [open a draft pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests#draft-pull-requests) when you're willing to discuss an idea you're working on but haven't yet finished all of the above. That's appreciated and part of the community sharing.
 

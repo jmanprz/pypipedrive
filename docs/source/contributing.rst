@@ -5,8 +5,8 @@ Want to contribute or make a suggestion? Feel free. But don't forget to adhere t
 
 We follow **Git Flow** branching strategy to maintain a clean and organized development workflow. Post your questions at the project's `Github Page <http://www.github.com/jmanprz/pypipedrive>`_. Remember: there are no stupid questions, only stupid silences.
 
-Getting started
----------------
+Development Setup
+-----------------
 
 If it's your first time working on this library, clone the repo and make sure first that you can successfully run tests on your local machine. If that doesn't work out of the box, please check your local development environment before filing an issue.
 
@@ -29,15 +29,42 @@ We follow `Git Flow <https://nvie.com/posts/a-successful-git-branching-model/>`_
 
 **Branch Types:**
 
-| **Type** | **Purpose** | **Base Branch** | **Naming** |
-|---|---|---|---|
-| Feature | New feature development | ``develop`` | ``feature/<name>`` |
-| Bugfix | Bug fixes | ``develop`` | ``bugfix/<name>`` |
-| Hotfix | Production fixes | ``main`` | ``hotfix/<name>`` |
-| Docs | Documentation updates | ``develop`` | ``docs/<topic>`` |
-| Chore | Maintenance, dependencies | ``develop`` | ``chore/<desc>`` |
-| Refactor | Code refactoring | ``develop`` | ``refactor/<area>`` |
-| Test | Test improvements | ``develop`` | ``test/<area>`` |
+.. list-table::
+   :header-rows: 1
+   :widths: 15 30 15 25
+
+   * - Type
+     - Purpose
+     - Base Branch
+     - Naming
+   * - Feature
+     - New feature development
+     - ``develop``
+     - ``feature/<name>``
+   * - Bugfix
+     - Bug fixes
+     - ``develop``
+     - ``bugfix/<name>``
+   * - Hotfix
+     - Production fixes
+     - ``main``
+     - ``hotfix/<name>``
+   * - Docs
+     - Documentation updates
+     - ``develop``
+     - ``docs/<topic>``
+   * - Chore
+     - Maintenance, dependencies
+     - ``develop``
+     - ``chore/<desc>``
+   * - Refactor
+     - Code refactoring
+     - ``develop``
+     - ``refactor/<area>``
+   * - Test
+     - Test improvements
+     - ``develop``
+     - ``test/<area>``
 
 **Workflow:**
 

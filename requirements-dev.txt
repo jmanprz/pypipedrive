@@ -1,4 +1,5 @@
 annotated-types==0.7.0
+autodoc_pydantic==2.2.0
 babel==2.17.0
 beautifulsoup4==4.13.3
 black==25.1.0
@@ -31,7 +32,7 @@ pyproject_hooks==1.2.0
 pytest==8.3.4
 python-dotenv==1.2.1
 requests==2.32.3
-revitron_sphinx_theme @ https://github.com/revitron/revitron-sphinx-theme/archive/master.zip
+revitron-sphinx-theme @ git+https://github.com/mesozoic/revitron-sphinx-theme.git
 setuptools==75.8.0
 snowballstemmer==2.2.0
 soupsieve==2.6
@@ -40,11 +41,13 @@ sphinx-basic-ng==1.0.0b2
 sphinx-rtd-theme==3.0.2
 sphinxcontrib-applehelp==2.0.0
 sphinxcontrib-devhelp==2.0.0
+sphinxcontrib-googleanalytics==0.5
 sphinxcontrib-htmlhelp==2.1.0
 sphinxcontrib-jquery==4.1
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==2.0.0
 sphinxcontrib-serializinghtml==2.0.0
+sphinxext-opengraph==0.13.0
 tox==4.24.1
 typing_extensions==4.12.2
 urllib3==2.3.0
