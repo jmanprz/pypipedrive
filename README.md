@@ -51,9 +51,9 @@ For security vulnerabilities, share them _directly_ to the maintainers via email
 
 ### Submitting a patch
 
-You're welcome to [submit a pull request](https://github.com/jmanprz/pypipedrive/pulls) for a bug fix or a new feature as long as you use the library.
+You're welcome to [submit a pull request](https://github.com/jmanprz/pypipedrive/pulls) for a bug fix or a new feature.
 
-Work off of `develop` to create the patch branch and open pull requests targeting `develop`.
+We follow **Git Flow** branching strategy. See [CONTRIBUTING.rst](./CONTRIBUTING.rst) for branch naming conventions and workflow details.
 
 All pull requests **must adhere** to the following guidelines:
 
@@ -68,4 +68,4 @@ Don't hesitate to [open a draft pull request](https://docs.github.com/en/pull-re
 
 This project is licensed under the [MIT License](https://opensource.org/license/MIT).
 
-Built by Juan Manuel M. Pérez from [® Magical Potion](https://magicalpotion.io?utm_source=pypipedrive&utm_medium=github&utm_campaign=open_source) for teams that need to enhance and customise their Pipedrive sales experience.
+Built by [Juan Manuel M. Pérez](https://github.com/jmanprz), Pipedrive API expert from [© Magical Potion](https://magicalpotion.io?utm_source=pypipedrive&utm_medium=github&utm_campaign=open_source) for teams that need to enhance and customise their Pipedrive sales experience with custom integrations and automations.
