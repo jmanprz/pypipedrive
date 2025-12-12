@@ -21,6 +21,7 @@ from typing import (
     Union,
 )
 from .types import (
+    PartiesDict,
     assert_typed_dict,
     assert_typed_obj,
     AddressDict,
@@ -37,6 +38,7 @@ from .types import (
     LabelValuePrimaryDict,
     MonetaryDict,
     ParticipantDict,
+    PartiesDict,
     PriceDict,
     SeasonalityDict,
     SubfieldDict,
@@ -586,6 +588,16 @@ class ExpectedOutcomeField(_DictField[ExpectedOutcomeDict]):
 
     contains_type = ExpectedOutcomeDict
 
+
+class PartiesField(_DictField[PartiesDict]):
+    """
+    Accepts a `dict` with schema `PartiesDict` (Mailbox/MailThreads to, from, 
+    bcc and cc).
+    """
+
+    contains_type = PartiesDict
+
+
 # === List fields ===
 
 class _ListField(
@@ -712,7 +724,7 @@ class ImField(_ValidatingListField[LabelValuePrimaryDict]):
 
 class LabelIdsField(_ValidatingListField[Union[int, str]]):
     """
-    Accepts a list of integers.
+    Accepts a list of integers or strings.
     """
 
     contains_type = Union[int, str]

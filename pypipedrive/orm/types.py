@@ -272,3 +272,29 @@ class ExpectedOutcomeDict(pydantic.BaseModel):
 
     target:          Optional[Union[float, int]] = None
     tracking_metric: Optional[str] = None
+
+
+class PartyDict(pydantic.BaseModel):
+    """
+    Represents the parties party of a MailThread (to, from, cc, bcc)
+    """
+
+    id:                     Optional[int] = None
+    name:                   Optional[str] = None
+    email_address:          Optional[str] = None
+    message_time:           Optional[int] = None
+    linked_person_id:       Optional[int] = None
+    linked_person_name:     Optional[str] = None
+    linked_organization_id: Optional[int] = None
+    mail_message_party_id:  Optional[int] = None
+
+
+class PartiesDict(pydantic.BaseModel):
+    """
+    Represents the parties involved in a MailThread.
+    """
+
+    to:       Optional[List[PartyDict]] = None
+    cc:       Optional[List[PartyDict]] = None
+    bcc:      Optional[List[PartyDict]] = None
+    from_:    Optional[List[PartyDict]] = pydantic.Field(None, alias="from")

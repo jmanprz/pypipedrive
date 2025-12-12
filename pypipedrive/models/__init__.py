@@ -15,6 +15,7 @@ from .lead_fields import LeadFields
 from .lead_labels import LeadLabels
 from .lead_sources import LeadSources
 from .leads import Leads
+from .mail_threads import MailThreads
 from .organization_fields import OrganizationFields
 from .organization_relationships import OrganizationRelationships
 from .organizations import Organizations
@@ -44,6 +45,7 @@ __all__ = [
     "LeadLabels",
     "LeadSources",
     "Leads",
+    "MailThreads",
     "OrganizationFields",
     "OrganizationRelationships",
     "Organizations",

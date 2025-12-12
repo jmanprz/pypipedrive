@@ -44,14 +44,6 @@ The :class:`~pypipedrive.orm.Model` class provides class methods and instance me
     new_deal.save()
     print(new_deal.id)  # The ID is assigned after saving
 
-- **Update**: To update an existing record, modify its attributes and call the ``save()`` method.
-
-.. code-block:: python
-
-    deal = Deals.get(id=1)
-    deal.title = "Updated Deal Title"
-    deal.save()
-
 - **Retrieve**: To retrieve a record by its ID, use the ``get()`` class method.
 
 .. code-block:: python
@@ -59,11 +51,18 @@ The :class:`~pypipedrive.orm.Model` class provides class methods and instance me
     deal = Deals.get(id=1)
     print(deal.title)
 
+- **Update**: To update an existing record, modify its attributes and call the ``save()`` method.
+
+.. code-block:: python
+
+    deal.title = "Updated Deal Title"
+    deal.save()
+
 - **List**: To list records with optional filtering, use the ``all()`` class method.
 
 .. code-block:: python
 
-    deals = Deals.all(params={...})
+    deals: List[Deals] = Deals.all(params={...})
     for deal in deals:
         print(deal.id, deal.title)
 
@@ -71,7 +70,6 @@ The :class:`~pypipedrive.orm.Model` class provides class methods and instance me
 
 .. code-block:: python
 
-    deal = Deals.get(id=1)
     deal.delete()
 
 - **Batch delete**: To delete multiple records at once, use the ``batch_delete()`` class method.
@@ -88,7 +86,6 @@ Other :class:`~pypipedrive.orm.Model` methods include:
 
 .. code-block:: python
 
-    deal = Deals.get(id=1)
     deal.fetch()
 
 - **Exists**: Check if a record exists by its ID.
@@ -101,7 +98,6 @@ Other :class:`~pypipedrive.orm.Model` methods include:
 
 .. code-block:: python
 
-    deal = Deals.get(id=1)
     record_dict = deal.to_record()
 
 - **From record**: Create an instance from a dictionary representation.
