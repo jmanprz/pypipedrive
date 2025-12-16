@@ -21,7 +21,6 @@ from typing import (
     Union,
 )
 from .types import (
-    PartiesDict,
     assert_typed_dict,
     assert_typed_obj,
     AddressDict,
