@@ -1,5 +1,5 @@
-Models
-------
+ORM Model Classes
+-----------------
 
 .. autoclass:: pypipedrive.orm.model.Model
     :members:

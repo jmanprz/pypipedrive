@@ -36,7 +36,6 @@ This library provides two main interfaces to interact with the Pipedrive API.
     >>> import os
     >>> from pypipedrive import Api
     >>> api = Api(api_token=os.environ["PIPEDRIVE_API_TOKEN"])
-    >>> deal_id = 1 # define your deal identifier
     >>> api.get(uri="deals/1")
     ApiResponse(
         success=True,
@@ -44,8 +43,16 @@ This library provides two main interfaces to interact with the Pipedrive API.
         additional_data={},
         related_objects={}
     )
+    >>> params = {'status': 'open'}
+    >>> api.get(uri="deals", params=params)
+    ApiResponse(
+        success=True,
+        data=[{'id': 1, 'title': '...', '...'}, {'id': 2, '...',}, ...],
+        additional_data={},
+        related_objects={}
+    )
 
-The :class:`~pypipedrive.Api` exposes the methods ``get()``, ``post()``, ``put()`` (v1), ``patch()`` (v2) and ``delete()`` to interact with any endpoint of the Pipedrive API.
+The :class:`~pypipedrive.Api` exposes the methods ``get()``, ``post()``, ``put()``, ``patch()`` and ``delete()`` to interact with any endpoint of the Pipedrive API.
 
 - The :class:`~pypipedrive.orm.Model` class is the parent class of the Pipedrive entities for retrieving, creating, and modifying any records in Pipedrive.
 
