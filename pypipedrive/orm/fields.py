@@ -37,6 +37,7 @@ from .types import (
     LabelValuePrimaryDict,
     MonetaryDict,
     ParticipantDict,
+    PartiesDict,
     PriceDict,
     SeasonalityDict,
     SubfieldDict,
@@ -586,12 +587,20 @@ class ExpectedOutcomeField(_DictField[ExpectedOutcomeDict]):
 
     contains_type = ExpectedOutcomeDict
 
+
+class PartiesField(_DictField[PartiesDict]):
+    """
+    Accepts a `dict` with schema `PartiesDict` (MailThreads to, from, bcc and cc).
+    """
+
+    contains_type = PartiesDict
+
+
 # === List fields ===
 
 class _ListField(
     Generic[T_API, T_ORM, T_ORM_List],
-    Field[List[T_API], List[T_ORM], T_ORM_List]
-    ):
+    Field[List[T_API], List[T_ORM], T_ORM_List]):
     """
     Generic type for a field that stores a list of values.
     Not for direct use; should be subclassed by concrete field types (below).
@@ -712,7 +721,7 @@ class ImField(_ValidatingListField[LabelValuePrimaryDict]):
 
 class LabelIdsField(_ValidatingListField[Union[int, str]]):
     """
-    Accepts a list of integers.
+    Accepts a list of integers or strings.
     """
 
     contains_type = Union[int, str]
