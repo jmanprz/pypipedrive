@@ -591,8 +591,7 @@ class ExpectedOutcomeField(_DictField[ExpectedOutcomeDict]):
 
 class PartiesField(_DictField[PartiesDict]):
     """
-    Accepts a `dict` with schema `PartiesDict` (Mailbox/MailThreads to, from, 
-    bcc and cc).
+    Accepts a `dict` with schema `PartiesDict` (MailThreads to, from, bcc and cc).
     """
 
     contains_type = PartiesDict
@@ -602,8 +601,7 @@ class PartiesField(_DictField[PartiesDict]):
 
 class _ListField(
     Generic[T_API, T_ORM, T_ORM_List],
-    Field[List[T_API], List[T_ORM], T_ORM_List]
-    ):
+    Field[List[T_API], List[T_ORM], T_ORM_List]):
     """
     Generic type for a field that stores a list of values.
     Not for direct use; should be subclassed by concrete field types (below).

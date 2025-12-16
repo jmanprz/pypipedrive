@@ -3,7 +3,7 @@ Contributing
 
 Want to contribute or make a suggestion? Feel free. But don't forget to adhere to the guidelines and expectations set forth in the `Contributor Covenant <https://www.contributor-covenant.org/version/2/1/code_of_conduct/>`_.
 
-We follow **Git Flow** branching strategy to maintain a clean and organized development workflow. Post your questions at the project's `Github Page <http://www.github.com/jmanprz/pypipedrive>`_. Remember: there are no stupid questions, only stupid silences.
+We follow **Git Flow** branching strategy to maintain a clean and organized development workflow. Post your questions at the project's `GitHub Page <http://www.github.com/jmanprz/pypipedrive>`_. Remember: there are no stupid questions, only stupid silences.
 
 Development Setup
 -----------------
@@ -77,7 +77,7 @@ We follow `Git Flow <https://nvie.com/posts/a-successful-git-branching-model/>`_
 **Examples:**
 
 - ``feature/add-entity-mailbox`` — New mailbox entity
-- ``bugfix/fix-entity-mailbox-attributes`` — Contact update issue
+- ``bugfix/fix-entity-mailbox-attributes`` — Mailbox attribute fix
 - ``hotfix/security-patch-v1.0.3`` — Production security fix
 - ``docs/update-getting-started`` — Documentation update
 - ``refactor/deprecate-v1-api-client`` — Code improvement

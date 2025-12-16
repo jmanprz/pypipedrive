@@ -32,7 +32,7 @@ pyproject_hooks==1.2.0
 pytest==8.3.4
 python-dotenv==1.2.1
 requests==2.32.3
-revitron-sphinx-theme @ git+https://github.com/mesozoic/revitron-sphinx-theme.git
+revitron-sphinx-theme @ git+https://github.com/mesozoic/revitron-sphinx-theme.git@7ee572e9e4255c9aaa6b383656ff807fdac1011b
 setuptools==75.8.0
 snowballstemmer==2.2.0
 soupsieve==2.6

@@ -276,7 +276,7 @@ class ExpectedOutcomeDict(pydantic.BaseModel):
 
 class PartyDict(pydantic.BaseModel):
     """
-    Represents the parties party of a MailThread (to, from, cc, bcc)
+    Represents the individual party of a MailThread (to, from, cc, bcc).
     """
 
     id:                     Optional[int] = None

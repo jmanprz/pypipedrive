@@ -16,9 +16,9 @@ class MailThreads(Model):
     sync: SmartBCC feature which stores the copies of email messages to 
     Pipedrive by adding the SmartBCC specific address to mail recipients.
 
-    The Mailbox represents the threads. Therefore, querying Mailbox.get will
-    return a specific mail thread whereas Mailbox.all will return a list of 
-    mail threads.
+    The Mailbox represents the MailThreads. Therefore, querying MailThreads.get 
+    will return a specific mail thread whereas MailThreads.all will return a 
+    list of mail threads.
 
     See `Mailbox API reference <https://developers.pipedrive.com/docs/api/v1/Mailbox>`_.
 
@@ -50,7 +50,7 @@ class MailThreads(Model):
     id                              = F.IntegerField("id", readonly=True)
     parties                         = F.PartiesField("parties")
     drafts_parties                  = F.LabelIdsField("drafts_parties")
-    folders                         = F.LabelIdsField("drafts_parties")
+    folders                         = F.LabelIdsField("folders")
     account_id                      = F.TextField("account_id")
     user_id                         = F.IntegerField("user_id")
     version                         = F.IntegerField("version")
@@ -106,7 +106,7 @@ class MailThreads(Model):
         """
         assert folder in ["inbox", "drafts", "sent", "archive"], \
             "folder must be one of: inbox, drafts, sent, archive"
-        uri = f"{cls._get_meta('entity_name')}/mailThreads"
+        uri = cls._get_meta("entity_name")
         params.update({"folder": folder})
         response = cls.get_api(version=V1).get(uri, params=params)
         return [cls(**item) for item in response.data]
@@ -173,11 +173,9 @@ class MailThreads(Model):
             message_id: The ID of the mail message to fetch.
         """
         uri = f"mailbox/mailMessages/{message_id}"
-        response = cls.get_api(version=V1).get(uri, params=params)
-        return cls(**response.data)
+        return cls.get_api(version=V1).get(uri, params=params).data
 
     @warn_endpoint_legacy
-    @classmethod
     def mail_messages(self) -> List[Dict]:
         """
         Returns all the mail messages inside a specified mail thread.

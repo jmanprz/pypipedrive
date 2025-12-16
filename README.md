@@ -53,7 +53,7 @@ For security vulnerabilities, share them _directly_ to the maintainers via email
 
 You're welcome to [submit a pull request](https://github.com/jmanprz/pypipedrive/pulls) for a bug fix or a new feature.
 
-We follow **Git Flow** branching strategy. See [CONTRIBUTING.rst](./CONTRIBUTING.rst) for branch naming conventions and workflow details.
+We follow **Git Flow** branching strategy. See the [contributing guide](docs/source/contributing.rst) for branch naming conventions and workflow details.
 
 All pull requests **must adhere** to the following guidelines:
 
