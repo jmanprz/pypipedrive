@@ -11,7 +11,7 @@ jobs:
       - name: Check branch name
         run: |
           BRANCH=${{ github.head_ref }}
-          if ! echo "$BRANCH" | grep -E '^(feature|bugfix|docs|chore|hotfix|refactor|test)/' && [ "$BRANCH" != "develop" ] && [ "$BRANCH" != "main" ]; then
+          if ! ( echo "$BRANCH" | grep -Eq '^(feature|bugfix|docs|chore|hotfix|refactor|test)/' || [ "$BRANCH" = "develop" ] || [ "$BRANCH" = "main" ] ); then
             echo "Branch name '$BRANCH' must follow pattern: feature/, bugfix/, docs/, chore/, hotfix/, refactor/, test/"
             exit 1
           fi
