@@ -1,0 +1,12 @@
+{
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "livePreview.defaultPreviewPath": "/htmlcov/index.html",
+    "python.analysis.autoImportCompletions": false,
+    "[python]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4,
+        "editor.detectIndentation": false,
+        "editor.rulers": [79]
+    }
+}

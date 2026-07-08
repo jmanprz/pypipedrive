@@ -1,0 +1,153 @@
+[
+  {
+    "entity": "leads",
+    "created_at": "2024-01-31T16:47:43.881Z",
+    "id": "74790f90-c058-11ee-82e0-f5d2b0228697",
+    "fields": {
+      "id": "74790f90-c058-11ee-82e0-f5d2b0228697",
+      "title": "Sample Lead 1",
+      "owner_id": 19100561,
+      "creator_id": 17095206,
+      "label_ids": [
+        "419cb941-6c47-11eb-a16d-c767977ce3d3"
+      ],
+      "value": {},
+      "expected_close_date": null,
+      "person_id": 6715,
+      "organization_id": 2844,
+      "is_archived": false,
+      "archive_time": null,
+      "source_name": "Manually created",
+      "origin": "ManuallyCreated",
+      "origin_id": null,
+      "channel": null,
+      "channel_id": null,
+      "was_seen": true,
+      "next_activity_id": null,
+      "add_time": "2024-01-31T16:47:43.881Z",
+      "update_time": "2025-02-12T10:29:40.143Z",
+      "visible_to": "1",
+      "cc_email": "redacted@example.com"
+    }
+  },
+  {
+    "entity": "leads",
+    "created_at": "2024-01-31T16:49:43.741Z",
+    "id": "bbea3ed0-c058-11ee-82e0-f5d2b0228697",
+    "fields": {
+      "id": "bbea3ed0-c058-11ee-82e0-f5d2b0228697",
+      "title": "Sample Lead 2",
+      "owner_id": 19100561,
+      "creator_id": 17095206,
+      "label_ids": [
+        "419cb942-6c47-11eb-a16d-c767977ce3d3"
+      ],
+      "value": {},
+      "expected_close_date": null,
+      "person_id": 6716,
+      "organization_id": 2845,
+      "is_archived": false,
+      "archive_time": null,
+      "source_name": "Manually created",
+      "origin": "ManuallyCreated",
+      "origin_id": null,
+      "channel": null,
+      "channel_id": null,
+      "was_seen": true,
+      "next_activity_id": null,
+      "add_time": "2024-01-31T16:49:43.741Z",
+      "update_time": "2025-05-15T13:33:57.325Z",
+      "visible_to": "1",
+      "cc_email": "redacted@example.com"
+    }
+  },
+  {
+    "entity": "leads",
+    "created_at": "2024-01-31T16:57:36.013Z",
+    "id": "d5693bd0-c059-11ee-8c2d-47ab7831decb",
+    "fields": {
+      "id": "d5693bd0-c059-11ee-8c2d-47ab7831decb",
+      "title": "Sample Lead 3",
+      "owner_id": 19100561,
+      "creator_id": 17095206,
+      "label_ids": [
+        "419cb942-6c47-11eb-a16d-c767977ce3d3"
+      ],
+      "value": {},
+      "expected_close_date": null,
+      "person_id": 6717,
+      "organization_id": 2845,
+      "is_archived": false,
+      "archive_time": null,
+      "source_name": "Manually created",
+      "origin": "ManuallyCreated",
+      "origin_id": null,
+      "channel": null,
+      "channel_id": null,
+      "was_seen": true,
+      "next_activity_id": null,
+      "add_time": "2024-01-31T16:57:36.013Z",
+      "update_time": "2025-02-12T10:31:08.755Z",
+      "visible_to": "1",
+      "cc_email": "redacted@example.com"
+    }
+  },
+  {
+    "entity": "leads",
+    "created_at": "2024-02-01T08:54:54.474Z",
+    "id": "9166d6a0-c0df-11ee-9eaf-0ff0d2366ec9",
+    "fields": {
+      "id": "9166d6a0-c0df-11ee-9eaf-0ff0d2366ec9",
+      "title": "Sample Lead 4",
+      "owner_id": 19911954,
+      "creator_id": 19911954,
+      "label_ids": [],
+      "value": {},
+      "expected_close_date": null,
+      "person_id": 6737,
+      "organization_id": 2864,
+      "is_archived": true,
+      "archive_time": "2024-06-20T09:23:35.359Z",
+      "source_name": "Manually created",
+      "origin": "ManuallyCreated",
+      "origin_id": null,
+      "channel": null,
+      "channel_id": null,
+      "was_seen": true,
+      "next_activity_id": null,
+      "add_time": "2024-02-01T08:54:54.474Z",
+      "update_time": "2024-06-20T09:23:35.411Z",
+      "visible_to": "3",
+      "cc_email": "redacted@example.com"
+    }
+  },
+  {
+    "entity": "leads",
+    "created_at": "2024-02-01T09:02:47.799Z",
+    "id": "ab868070-c0e0-11ee-95ad-8766d42ac9a4",
+    "fields": {
+      "id": "ab868070-c0e0-11ee-95ad-8766d42ac9a4",
+      "title": "Sample Lead 5",
+      "owner_id": 19911954,
+      "creator_id": 19911954,
+      "label_ids": [],
+      "value": {},
+      "expected_close_date": null,
+      "person_id": null,
+      "organization_id": 2866,
+      "is_archived": true,
+      "archive_time": "2024-02-01T09:43:49.311Z",
+      "source_name": "Manually created",
+      "origin": "ManuallyCreated",
+      "origin_id": null,
+      "channel": null,
+      "channel_id": null,
+      "was_seen": true,
+      "next_activity_id": null,
+      "add_time": "2024-02-01T09:02:47.799Z",
+      "update_time": "2024-02-01T09:43:49.429Z",
+      "visible_to": "3",
+      "cc_email": "redacted@example.com"
+    }
+  }
+]

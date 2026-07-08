@@ -93,4 +93,4 @@ Conventions to follow when adding or editing an entity:
 - **Git Flow branching** (enforced on PRs by `.github/workflows` branch-name check): branches must be `feature/`, `bugfix/`, `hotfix/`, `docs/`, `chore/`, `refactor/`, or `test/`. Base off `develop` (off `main` for `hotfix/`).
 - Public functions/methods carry docstrings and type annotations; new functionality ships with tests; `make test` must pass.
 - Bump the version in a single place: `pypipedrive/__init__.py` (`__version__`) — `setup.cfg` reads it via `attr:`.
-- `scripts/`, `check_models.py`, `*.json` dumps, `DEPLOYMENT.md`, `README-OLD.md`, and sample media are **gitignored** local helpers, not part of the shipped package.
+- Runnable usage scripts live in `examples/` (with small **anonymized** samples in `examples/data/`); the release runbook is `DEPLOYMENT.md`. None of these ship in the installed package. Local-only artifacts that stay **gitignored**: `check_models.py`, the full non-anonymized dumps (`deals_v2.json`, `leads_dump.json`), `README-OLD.md`, sample media, and secrets (`.env`, `.pypirc`).

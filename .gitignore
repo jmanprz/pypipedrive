@@ -1,5 +1,5 @@
 .DS_Store
-.vscode
+.vscode/*
 .env
 .env.*
 .venv
@@ -22,11 +22,20 @@ pip-wheel-metadata
 test.py
 *.json
 *.egg-info/
-scripts/
 
 check_models.py
 imageTest*
 sample-*
 README-OLD.md
-DEPLOYMENT.md
 .pypirc
+
+# Full, non-anonymized data dumps (kept local; anonymized samples live in
+# examples/data/). These stay ignored via *.json above.
+deals_v2.json
+leads_dump.json
+
+# Committed files — exceptions that must come after *.json / .vscode/* above.
+!examples/data/*.json
+!tests/sample_data/**/*.json
+!.vscode/settings.json
+!.vscode/launch.json
